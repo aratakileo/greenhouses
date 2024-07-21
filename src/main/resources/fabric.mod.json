@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "greenhouses",
+  "version": "${version}",
+
+  "name": "Greenhouses",
+  "description": "Little pretty functional blocks of greenhouse",
+  "authors": [
+    "Arataki Leo"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/greenhouses",
+    "sources": "https://github.com/aratakileo/greenhouses",
+    "issues": "https://github.com/aratakileo/greenhouses/issues"
+  },
+
+  "license": "GPL-3.0",
+  "icon": "assets/greenhouses/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.aratakileo.greenhouses.GreenhousesInitializer"
+    ]
+  },
+  "mixins": [
+    "greenhouses.mixins.json"
+  ],
+    
+  "depends": {
+    "fabricloader": "*",
+    "fabric": "*",
+    "minecraft": ">=${minecraft_version}"
+  }
+}

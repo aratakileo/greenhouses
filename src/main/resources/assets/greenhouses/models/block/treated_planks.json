@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "greenhouses:block/treated_planks"
+  }
+}

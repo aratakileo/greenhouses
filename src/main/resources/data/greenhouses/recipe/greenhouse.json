@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:glass"
+    },
+    "*": {
+      "item": "greenhouses:treated_planks"
+    }
+  },
+  "pattern": [
+    "###",
+    "# #",
+    "***"
+  ],
+  "result": {
+    "count": 1,
+    "id": "greenhouses:greenhouse"
+  }
+}
