@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "greenhouses:block/treated_pressure_plate"
+    },
+    "powered=true": {
+      "model": "greenhouses:block/treated_pressure_plate_down"
+    }
+  }
+}

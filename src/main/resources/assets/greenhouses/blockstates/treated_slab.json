@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "greenhouses:block/treated_slab"
+    },
+    "type=double": {
+      "model": "greenhouses:block/treated_planks"
+    },
+    "type=top": {
+      "model": "greenhouses:block/treated_slab_top"
+    }
+  }
+}

@@ -1,6 +1,13 @@
 {
+  "replace": false,
   "values": [
     "greenhouses:treated_planks",
+    "greenhouses:treated_button",
+    "greenhouses:treated_fence",
+    "greenhouses:treated_fence_gate",
+    "greenhouses:treated_pressure_plate",
+    "greenhouses:treated_slab",
+    "greenhouses:treated_stairs",
     "greenhouses:treated_planks_fake"
   ]
 }
