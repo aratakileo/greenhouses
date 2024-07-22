@@ -5,14 +5,17 @@
     "#": {
       "item": "minecraft:glass"
     },
-    "*": {
-      "item": "greenhouses:treated_planks"
+    "-": {
+      "item": "greenhouses:treated_slab"
+    },
+    "O": {
+      "item": "minecraft:dispenser"
     }
   },
   "pattern": [
     "###",
-    "# #",
-    "***"
+    "#O#",
+    "---"
   ],
   "result": {
     "count": 1,

@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "greenhouses:greenhouse",
     "greenhouses:coke_bricks",
     "greenhouses:coke_brick_slab",
     "greenhouses:coke_brick_stairs",

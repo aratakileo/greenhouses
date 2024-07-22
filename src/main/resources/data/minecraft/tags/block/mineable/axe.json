@@ -7,7 +7,6 @@
     "greenhouses:treated_fence_gate",
     "greenhouses:treated_pressure_plate",
     "greenhouses:treated_slab",
-    "greenhouses:treated_stairs",
-    "greenhouses:treated_planks_fake"
+    "greenhouses:treated_stairs"
   ]
 }

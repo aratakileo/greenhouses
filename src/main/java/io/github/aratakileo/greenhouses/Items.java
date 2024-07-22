@@ -1,5 +1,6 @@
 package io.github.aratakileo.greenhouses;
 
+import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +13,22 @@ import java.util.ArrayList;
 
 public final class Items {
     public final static ArrayList<Item> ITEMS = new ArrayList<>();
-    public final static Item CREOSOTE_BUCKET = createItem(new BucketItem(Fluids.WATER, (new Item.Properties()).craftRemainder(net.minecraft.world.item.Items.BUCKET).stacksTo(1)), "creosote_bucket");
+
+    public final static Item CREOSOTE_BUCKET = createItem(
+            new BucketItem(
+                    Fluids.WATER,
+                    new Item.Properties().craftRemainder(net.minecraft.world.item.Items.BUCKET).stacksTo(1)
+            ),
+            "creosote_bucket"
+    );
+    public final static Item COKE_BRICK = createItem(
+            new Item(new Item.Properties()),
+            "coke_brick"
+    );
+    public final static Item COKE_COAL = createItem(
+            new Item(new Item.Properties()),
+            "coke_coal"
+    );
 
     private static Item createItem(@NotNull Item item, @NotNull String name) {
         final var resourceLocation = ResourceLocation.fromNamespaceAndPath(GreenhousesInitializer.NAMESPACE_OR_MODID, name);
@@ -26,6 +42,6 @@ public final class Items {
     }
 
     public static void init() {
-
+        FuelRegistry.INSTANCE.add(COKE_COAL, 3200);
     }
 }

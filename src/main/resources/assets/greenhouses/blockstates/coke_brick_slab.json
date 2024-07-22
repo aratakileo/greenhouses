@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "greenhouses:block/coke_brick_slab"
+    },
+    "type=double": {
+      "model": "greenhouses:block/coke_bricks"
+    },
+    "type=top": {
+      "model": "greenhouses:block/coke_brick_slab_top"
+    }
+  }
+}

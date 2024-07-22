@@ -1,6 +1,19 @@
 {
   "block.greenhouses.greenhouse": "Greenhouse",
   "block.greenhouses.treated_planks": "Treated planks",
-  "block.greenhouses.treated_planks_fake": "Treated planks (fake)",
+  "block.greenhouses.treated_stairs": "Treated stairs",
+  "block.greenhouses.treated_slab": "Treated slab",
+  "block.greenhouses.treated_fence": "Treated fence",
+  "block.greenhouses.treated_fence_gate": "Treated fence gate",
+  "block.greenhouses.treated_pressure_plate": "Treated pressure plate",
+  "block.greenhouses.treated_button": "Treated button",
+  "block.greenhouses.grout": "Grout",
+  "block.greenhouses.coke_bricks": "Coke bricks",
+  "block.greenhouses.coke_brick_stairs": "Coke brick stairs",
+  "block.greenhouses.coke_brick_slab": "Coke brick slab",
+  "block.greenhouses.coke_brick_wall": "Coke brick wall",
+  "block.greenhouses.coke_furnace": "Coke furnace",
+  "item.greenhouses.coke_brick": "Coke brick",
+  "item.greenhouses.coke_coal": "Coke coal",
   "item.greenhouses.creosote_bucket": "Creosote bucket"
 }

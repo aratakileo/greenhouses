@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ColorRGBA;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
@@ -22,7 +23,36 @@ public final class Blocks {
 
     public static final BlockSetType TREATED_BLOCK_SET_TYPE = new BlockSetType("treated");
     public static final WoodType TREATED_WOOD_TYPE = new WoodType("treated", TREATED_BLOCK_SET_TYPE);
-    public static final Block TREATED_PLANKS = createBlock("treated_planks");
+
+    public static final Block GROUT = createBlock(
+            new ColoredFallingBlock(new ColorRGBA(0xA1A3A3), net.minecraft.world.level.block.Blocks.CLAY.properties()),
+            "grout"
+    );
+    public static final Block COKE_BRICKS = createBlock(
+            new Block(net.minecraft.world.level.block.Blocks.DEEPSLATE_BRICKS.properties()),
+            "coke_bricks"
+    );
+    public static final Block COKE_BRICK_SLAB = createBlock(
+            new SlabBlock(BlockBehaviour.Properties.ofFullCopy(COKE_BRICKS)),
+            "coke_brick_slab"
+    );
+    public static final Block COKE_BRICK_STAIRS = createBlock(
+            new StairBlock(COKE_BRICKS.defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(COKE_BRICKS)),
+            "coke_brick_stairs"
+    );
+    public static final Block COKE_BRICK_WALL = createBlock(
+            new WallBlock(net.minecraft.world.level.block.Blocks.DEEPSLATE_BRICK_WALL.properties()),
+            "coke_brick_wall"
+    );
+    public static final Block COKE_FURNACE = createBlock(
+            new FurnaceBlock(net.minecraft.world.level.block.Blocks.DEEPSLATE_BRICKS.properties()),
+            "coke_furnace"
+    );
+
+    public static final Block TREATED_PLANKS = createBlock(
+            new Block(net.minecraft.world.level.block.Blocks.DARK_OAK_PLANKS.properties()),
+            "treated_planks"
+    );
     public static final Block TREATED_SLAB = createBlock(
             new SlabBlock(BlockBehaviour.Properties.ofFullCopy(TREATED_PLANKS)),
             "treated_slab"
@@ -58,7 +88,6 @@ public final class Blocks {
             "treated_button"
     );
 
-    public static final Block TREATED_PLANKS_FAKE = createBlock("treated_planks_fake");
     public static final Block GREENHOUSE = createBlock(
             new TransparentBlock(
                     BlockBehaviour.Properties.of()
@@ -76,14 +105,6 @@ public final class Blocks {
             "greenhouse",
             true
     );
-
-    private static Block createBlock(@NotNull String name) {
-        return createBlock(name, false);
-    }
-
-    private static Block createBlock(@NotNull String name, boolean translucent) {
-        return createBlock(name, net.minecraft.world.level.block.Blocks.DARK_OAK_PLANKS.properties(), translucent);
-    }
 
     private static Block createBlock(@NotNull String name, @NotNull BlockBehaviour.Properties properties, boolean translucent) {
         final var block = new Block(properties);

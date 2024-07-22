@@ -1,5 +1,7 @@
-import os
 import os.path
+
+replaceable_str = input('Replaceable value: ')
+new_str = input('New value: ')
 
 for path_postfix in [
     'assets/greenhouses/blockstates',
@@ -9,7 +11,7 @@ for path_postfix in [
     'data/greenhouses/recipe'
 ]:
     for filename in os.listdir('src/main/resources/' + path_postfix):
-        if not filename.startswith('dark_oak'): continue
+        if not filename.startswith(replaceable_str): continue
 
         filename = f'src/main/resources/{path_postfix}/{filename}'
 
@@ -18,8 +20,10 @@ for path_postfix in [
 
             with open(filename, 'w', encoding='utf-8') as w:
                 w.write(
-                    filetext.replace('minecraft:dark_oak', 'greenhouses:treated')
-                    .replace('minecraft:block/dark_oak', 'greenhouses:block/treated')
+                    filetext.replace(f'minecraft:{replaceable_str}', f'greenhouses:{new_str}')
+                    .replace(f'minecraft:block/{replaceable_str}', f'greenhouses:block/{new_str}')
                 )
 
-        os.rename(filename, filename.replace('dark_oak', 'treated'))
+        os.rename(filename, filename.replace(replaceable_str, new_str))
+
+print('Finished!')
