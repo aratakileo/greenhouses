@@ -13,8 +13,8 @@ public final class CreativeModeTab {
     private final static ResourceLocation MOD_TAB_RESOURCE_LOCATION = ResourceLocation.fromNamespaceAndPath(GreenhousesInitializer.NAMESPACE_OR_MODID, "item_group");
     public final static ResourceKey<net.minecraft.world.item.CreativeModeTab> MOD_TAB_RESOURCE_KEY = ResourceKey.create(BuiltInRegistries.CREATIVE_MODE_TAB.key(), MOD_TAB_RESOURCE_LOCATION);
     public final static net.minecraft.world.item.CreativeModeTab MOD_TAB = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(Items.CREOSOTE_BUCKET))
-            .title(Component.literal("Greenhouse items"))
+            .icon(() -> new ItemStack(Blocks.GREENHOUSE))
+            .title(Component.literal("Greenhouses"))
             .build();
 
     public static void init() {
