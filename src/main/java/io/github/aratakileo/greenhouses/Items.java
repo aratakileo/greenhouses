@@ -25,7 +25,7 @@ public final class Items {
             new Item(new Item.Properties()),
             "coke_brick"
     );
-    public final static Item COKE_COAL = createItem(
+    public final static Item COKED_COAL = createItem(
             new Item(new Item.Properties()),
             "coked_coal"
     );
@@ -42,6 +42,6 @@ public final class Items {
     }
 
     public static void init() {
-        FuelRegistry.INSTANCE.add(COKE_COAL, 3200);
+        FuelRegistry.INSTANCE.add(COKED_COAL, 3200);
     }
 }
