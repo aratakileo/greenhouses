@@ -27,7 +27,7 @@ public final class Items {
     );
     public final static Item COKE_COAL = createItem(
             new Item(new Item.Properties()),
-            "coke_coal"
+            "coked_coal"
     );
 
     private static Item createItem(@NotNull Item item, @NotNull String name) {

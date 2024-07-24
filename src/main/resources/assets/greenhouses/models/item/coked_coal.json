@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "greenhouses:item/coke_coal"
+    "layer0": "greenhouses:item/coked_coal"
   }
 }
