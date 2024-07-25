@@ -20,7 +20,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "io.github.aratakileo.greenhouses.GreenhousesInitializer"
+      "io.github.aratakileo.greenhouses.Greenhouses"
     ]
   },
   "mixins": [

@@ -1,10 +1,11 @@
-package io.github.aratakileo.greenhouses;
+package io.github.aratakileo.greenhouses.block;
 
+import io.github.aratakileo.greenhouses.Greenhouses;
+import io.github.aratakileo.greenhouses.Items;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ColorRGBA;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -89,7 +90,7 @@ public final class Blocks {
     );
 
     public static final Block GREENHOUSE = createBlock(
-            new TransparentBlock(
+            new GreenhouseBlock(
                     BlockBehaviour.Properties.of()
                             .mapColor(MapColor.COLOR_BROWN)
                             .instrument(NoteBlockInstrument.HAT)
@@ -116,10 +117,7 @@ public final class Blocks {
     }
 
     private static Block createBlock(@NotNull Block block, @NotNull String name, boolean translucent) {
-        final var resourceLocation = ResourceLocation.fromNamespaceAndPath(
-                GreenhousesInitializer.NAMESPACE_OR_MODID,
-                name
-        );
+        final var resourceLocation = Greenhouses.NAMESPACE.getIdentifier(name);
         final var item = new BlockItem(block, new Item.Properties());
 
         Registry.register(BuiltInRegistries.BLOCK, resourceLocation, block);
@@ -129,7 +127,7 @@ public final class Blocks {
 
         Items.ITEMS.add(item);
         BLOCKS.add(block);
-        GreenhousesInitializer.LOGGER.info("Register block: {}", resourceLocation);
+        Greenhouses.LOGGER.info("Register block: {}", resourceLocation);
 
         return block;
     }

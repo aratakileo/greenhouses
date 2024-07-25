@@ -1,9 +1,7 @@
 package io.github.aratakileo.greenhouses;
 
-import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.Fluids;
@@ -31,17 +29,17 @@ public final class Items {
     );
 
     private static Item createItem(@NotNull Item item, @NotNull String name) {
-        final var resourceLocation = ResourceLocation.fromNamespaceAndPath(GreenhousesInitializer.NAMESPACE_OR_MODID, name);
+        final var resourceLocation = Greenhouses.NAMESPACE.getIdentifier(name);
 
         Registry.register(BuiltInRegistries.ITEM, resourceLocation, item);
 
         ITEMS.add(item);
-        GreenhousesInitializer.LOGGER.info("Register item: {}", resourceLocation);
+        Greenhouses.LOGGER.info("Register item: {}", resourceLocation);
 
         return item;
     }
 
     public static void init() {
-        FuelRegistry.INSTANCE.add(COKED_COAL, 3200);
+        FuelController.addFuel(COKED_COAL, 3200);
     }
 }
