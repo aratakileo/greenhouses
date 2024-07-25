@@ -1,6 +1,5 @@
 package io.github.aratakileo.greenhouses.container.slot;
 
-import io.github.aratakileo.greenhouses.Greenhouses;
 import io.github.aratakileo.greenhouses.container.GreenhouseScreenContainer;
 import io.github.aratakileo.greenhouses.util.SoundUtil;
 import net.minecraft.sounds.SoundEvents;
@@ -10,10 +9,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
-public class WaterBucketSlot extends Slot {
+public class AddWaterSlot extends GreenhouseInputSlot {
     private final GreenhouseScreenContainer menu;
 
-    public WaterBucketSlot(
+    public AddWaterSlot(
             @NotNull GreenhouseScreenContainer menu,
             @NotNull Container container,
             int index,

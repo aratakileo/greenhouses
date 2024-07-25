@@ -3,21 +3,22 @@ package io.github.aratakileo.greenhouses.block.entity;
 import io.github.aratakileo.greenhouses.block.Blocks;
 import io.github.aratakileo.greenhouses.container.GreenhouseScreenContainer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class GreenhouseBlockEntity extends ContainerBlockEntity {
-    private final ContainerData data;
-
     public final static int GROUND_INPUT = 0,
             WATER_INPUT = 1,
             PLANT_INPUT = 2,
@@ -26,6 +27,7 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
             TOTAL_SLOTS = INPUT_SLOTS + OUTPUT_SLOTS,
             MAX_PROGRESS = 100;
 
+    private final ContainerData data;
 
     @CompoundDataField
     protected int progress = 0;
@@ -99,21 +101,28 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
     }
 
     private void addToOutputStacks(@NotNull List<ItemStack> itemStacks) {
-        for (final var itemStack: itemStacks)
-            for (var outputStackIndex = INPUT_SLOTS; outputStackIndex < TOTAL_SLOTS; outputStackIndex++) {
-                final var outputStack = getItem(outputStackIndex);
-                if (!itemStack.is(outputStack.getItem()) && !outputStack.isEmpty()) continue;
+        for (final var itemStack: itemStacks) {
+            var firstEmptyStackIndex = -1;
 
-                setItem(
-                        outputStackIndex,
-                        new ItemStack(
-                                itemStack.getItem(),
-                                outputStack.getCount() + itemStack.getCount()
-                        )
-                );
+            for (var i = INPUT_SLOTS; i < TOTAL_SLOTS; i++) {
+                final var outputStack = getItem(i);
 
-                break;
+                if (outputStack.isEmpty() && firstEmptyStackIndex == -1) {
+                    firstEmptyStackIndex = i;
+                    continue;
+                }
+
+                if (outputStack.is(itemStack.getItem())) {
+                    firstEmptyStackIndex = -1;
+                    getItem(i).grow(itemStack.getCount());
+                    break;
+                }
             }
+
+            if (firstEmptyStackIndex != -1) {
+                setItem(firstEmptyStackIndex, itemStack.copy());
+            }
+        }
     }
 
     private @NotNull ItemStack getGroundInputStack() {
@@ -153,14 +162,15 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
         final var reservedOutputIndexes = new ArrayList<Integer>();
 
         for (final var itemStack: itemStacks) {
+            var nearEmptyStackIndex = -1;
+
             for (var i = 0; i < outputStacks.size(); i++) {
                 if (reservedOutputIndexes.contains(i)) continue;
 
                 final var outputStack = outputStacks.get(i);
 
                 if (outputStack.isEmpty()) {
-                    reservedOutputIndexes.add(i);
-                    slotsScore++;
+                    nearEmptyStackIndex = i;
                     continue;
                 }
 
@@ -168,8 +178,15 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
                         outputStack.is(itemStack.getItem())
                                 && outputStack.getCount() + itemStack.getCount() <= outputStack.getMaxStackSize()
                 ) {
+                    nearEmptyStackIndex = -1;
                     slotsScore++;
+                    break;
                 }
+            }
+
+            if (nearEmptyStackIndex != -1) {
+                reservedOutputIndexes.add(nearEmptyStackIndex);
+                slotsScore++;
             }
         }
 
