@@ -74,11 +74,6 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
     public void tick(@NotNull Level lvl, @NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         if (lvl.isClientSide) return;
 
-        if (isGroundWet == 0 && getWaterInputStack().is(Items.WATER_BUCKET)) {
-            setItem(WATER_INPUT, new ItemStack(Items.BUCKET, 1));
-            isGroundWet = 1;
-        }
-
         if (!canInsertItemIntoOutputStacks(OUTPUT_SLOTS)) {
             progress = 0;
             setChanged(lvl, blockPos, blockState);
@@ -99,6 +94,10 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
         }
     }
 
+    public boolean isGroundWet() {
+        return isGroundWet == 1;
+    }
+
     private void addToOutputStacks(@NotNull List<ItemStack> itemStacks) {
         for (final var itemStack: itemStacks)
             for (var outputStackIndex = INPUT_SLOTS; outputStackIndex < TOTAL_SLOTS; outputStackIndex++) {
@@ -117,15 +116,15 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
             }
     }
 
-    public @NotNull ItemStack getGroundInputStack() {
+    private @NotNull ItemStack getGroundInputStack() {
         return getItem(GROUND_INPUT);
     }
 
-    public @NotNull ItemStack getWaterInputStack() {
+    private @NotNull ItemStack getWaterInputStack() {
         return getItem(WATER_INPUT);
     }
 
-    public @NotNull ItemStack getPlantInputStack() {
+    private @NotNull ItemStack getPlantInputStack() {
         return getItem(PLANT_INPUT);
     }
 

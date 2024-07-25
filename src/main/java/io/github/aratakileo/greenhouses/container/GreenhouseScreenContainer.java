@@ -90,6 +90,9 @@ public class GreenhouseScreenContainer extends AbstractContainerMenu {
     public boolean isGroundWet() {
         return data.get(1) == 1;
     }
+    public void setGroundWet(boolean isWet) {
+        data.set(1, isWet ? 1 : 0);
+    }
 
     public boolean isGrowing() {
         return data.get(0) > 0;

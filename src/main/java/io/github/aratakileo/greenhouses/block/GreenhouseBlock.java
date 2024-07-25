@@ -8,6 +8,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -41,7 +42,13 @@ public class GreenhouseBlock extends EntityBlock {
     }
 
     @Override
-    protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState blockState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull Player player, @NotNull BlockHitResult blockHitResult) {
+    protected @NotNull InteractionResult useWithoutItem(
+            @NotNull BlockState blockState,
+            @NotNull Level level,
+            @NotNull BlockPos blockPos,
+            @NotNull Player player,
+            @NotNull BlockHitResult blockHitResult
+    ) {
         if (level.isClientSide)
             return InteractionResult.SUCCESS;
 
@@ -53,5 +60,13 @@ public class GreenhouseBlock extends EntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
         return createTickerHelper(blockEntityType, BlockEntities.GREENHOUSE_BLOCK_ENTITY_TYPE, ((lvl, blockPos, _blockState, blockEntity) -> blockEntity.tick(lvl, blockPos, _blockState)));
+    }
+
+    @Override
+    protected void onRemove(@NotNull BlockState oldState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull BlockState newState, boolean moved) {
+        if (level.getBlockEntity(blockPos) instanceof GreenhouseBlockEntity blockEntity && blockEntity.isGroundWet())
+            level.setBlock(blockPos, Blocks.WATER.defaultBlockState(), 2);
+
+        super.onRemove(oldState, level, blockPos, newState, moved);
     }
 }
