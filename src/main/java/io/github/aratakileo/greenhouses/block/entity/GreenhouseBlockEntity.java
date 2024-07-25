@@ -99,8 +99,8 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
     }
 
     private void addToOutputStacks(@NotNull List<ItemStack> itemStacks) {
-        for (var outputStackIndex = INPUT_SLOTS; outputStackIndex < TOTAL_SLOTS; outputStackIndex++)
-            for (final var itemStack: itemStacks) {
+        for (final var itemStack: itemStacks)
+            for (var outputStackIndex = INPUT_SLOTS; outputStackIndex < TOTAL_SLOTS; outputStackIndex++) {
                 final var outputStack = getItem(outputStackIndex);
                 if (!itemStack.is(outputStack.getItem()) && !outputStack.isEmpty()) continue;
 
