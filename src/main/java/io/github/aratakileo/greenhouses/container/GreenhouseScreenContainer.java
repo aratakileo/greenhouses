@@ -3,7 +3,6 @@ package io.github.aratakileo.greenhouses.container;
 import io.github.aratakileo.greenhouses.block.entity.GreenhouseBlockEntity;
 import io.github.aratakileo.greenhouses.container.slot.GroundSlot;
 import io.github.aratakileo.greenhouses.container.slot.PlantSlot;
-import io.github.aratakileo.greenhouses.container.slot.StorageSlot;
 import io.github.aratakileo.greenhouses.container.slot.WaterBucketSlot;
 import io.github.aratakileo.greenhouses.screen.ScreenMenus;
 import net.minecraft.world.Container;
@@ -52,7 +51,7 @@ public class GreenhouseScreenContainer extends AbstractContainerMenu {
 
         for (var i = GreenhouseBlockEntity.INPUT_SLOTS; i < GreenhouseBlockEntity.TOTAL_SLOTS; i++) {
             final var localIndex = i - GreenhouseBlockEntity.INPUT_SLOTS;
-            addSlot(new StorageSlot(container, i, 124, 17 * (localIndex + 1) + localIndex));
+            addSlot(new Slot(container, i, 124, 17 * (localIndex + 1) + localIndex));
         }
 
         addPlayerInventory(playerInventory);

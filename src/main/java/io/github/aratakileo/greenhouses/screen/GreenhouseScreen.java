@@ -54,11 +54,11 @@ public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseScreenCo
         if (menu.isGrowing()) guiGraphics.blit(
                 TEXTURE,
                 x + PROGRESS_X_OFFSET,
-                y + PROGRESS_Y_OFFSET,
+                y + PROGRESS_Y_OFFSET + ICON_SIZE - (int)(menu.getProgress() * ICON_SIZE),
                 imageWidth,
-                0,
                 ICON_SIZE - (int)(menu.getProgress() * ICON_SIZE),
-                ICON_SIZE
+                ICON_SIZE,
+                (int)(menu.getProgress() * ICON_SIZE)
         );
         else guiGraphics.blit(
                 TEXTURE,

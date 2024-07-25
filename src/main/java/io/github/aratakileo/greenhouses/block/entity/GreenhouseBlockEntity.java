@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GreenhouseBlockEntity extends ContainerBlockEntity {
@@ -149,13 +150,29 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
     private boolean canInsertItemIntoOutputStacks(@NotNull List<ItemStack> itemStacks) {
         int slotsScore = 0;
 
-        for (final var itemStack: itemStacks)
-            for (final var outputStack: getOutputStacks())
+        final var outputStacks = getOutputStacks();
+        final var reservedOutputIndexes = new ArrayList<Integer>();
+
+        for (final var itemStack: itemStacks) {
+            for (var i = 0; i < outputStacks.size(); i++) {
+                if (reservedOutputIndexes.contains(i)) continue;
+
+                final var outputStack = outputStacks.get(i);
+
+                if (outputStack.isEmpty()) {
+                    reservedOutputIndexes.add(i);
+                    slotsScore++;
+                    continue;
+                }
+
                 if (
                         outputStack.is(itemStack.getItem())
                                 && outputStack.getCount() + itemStack.getCount() <= outputStack.getMaxStackSize()
-                                || outputStack.isEmpty()
-                ) slotsScore++;
+                ) {
+                    slotsScore++;
+                }
+            }
+        }
 
         return slotsScore >= itemStacks.size();
     }
