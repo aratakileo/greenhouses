@@ -2,8 +2,10 @@ package io.github.aratakileo.greenhouses.screen;
 
 import io.github.aratakileo.greenhouses.Greenhouses;
 import io.github.aratakileo.greenhouses.container.GreenhouseScreenContainer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,6 +26,8 @@ public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseScreenCo
             GROUND_ICON_Y_OFFSET = 45,
             ICON_SIZE = 16;
 
+    private final static Rect2i PROGRESS_OFFSET_RECT = new Rect2i(PROGRESS_X_OFFSET, PROGRESS_Y_OFFSET, ICON_SIZE, ICON_SIZE);
+
     public GreenhouseScreen(
             @NotNull GreenhouseScreenContainer abstractContainerMenu,
             @NotNull Inventory inventory,
@@ -40,7 +44,7 @@ public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseScreenCo
     }
 
     @Override
-    protected void renderBg(@NotNull GuiGraphics guiGraphics, float delta, int mouseX, int MouseY) {
+    protected void renderBg(@NotNull GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
         int bgX = (width - imageWidth) / 2;
         int bgY = (height - imageHeight) / 2;
 
@@ -48,6 +52,19 @@ public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseScreenCo
         renderGrowingProgress(guiGraphics, bgX, bgY);
         renderWetState(guiGraphics, bgX, bgY);
         renderSlotIcons(guiGraphics, bgX, bgY);
+
+        if (PROGRESS_OFFSET_RECT.contains(mouseX - bgX, mouseY - bgY))
+            guiGraphics.renderTooltip(
+                    Minecraft.getInstance().font,
+                    menu.isInvalidRecipe() ? Component.translatable(
+                            "gui.greenhouses.tooltip.growing_failed_%s".formatted(menu.getFailCode())
+                    ) : Component.translatable(
+                            "gui.greenhouses.tooltip.grow_progress",
+                            "%.2f%%".formatted(menu.getProgress() * 100f)
+                    ),
+                    mouseX,
+                    mouseY
+            );
     }
 
     private void renderGrowingProgress(@NotNull GuiGraphics guiGraphics, int x, int y) {
@@ -60,15 +77,16 @@ public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseScreenCo
                 ICON_SIZE,
                 (int)(menu.getProgress() * ICON_SIZE)
         );
-        else guiGraphics.blit(
-                TEXTURE,
-                x + PROGRESS_X_OFFSET,
-                y + PROGRESS_Y_OFFSET,
-                imageWidth,
-                ICON_SIZE,
-                ICON_SIZE,
-                ICON_SIZE
-        );
+        else if (menu.isInvalidRecipe())
+            guiGraphics.blit(
+                    TEXTURE,
+                    x + PROGRESS_X_OFFSET,
+                    y + PROGRESS_Y_OFFSET,
+                    imageWidth,
+                    ICON_SIZE,
+                    ICON_SIZE,
+                    ICON_SIZE
+            );
     }
 
     private void renderWetState(@NotNull GuiGraphics guiGraphics, int x, int y) {

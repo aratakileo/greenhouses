@@ -2,6 +2,7 @@ package io.github.aratakileo.greenhouses;
 
 import io.github.aratakileo.greenhouses.block.Blocks;
 import io.github.aratakileo.greenhouses.block.entity.BlockEntities;
+import io.github.aratakileo.greenhouses.recipe.RecipeTypes;
 import io.github.aratakileo.greenhouses.screen.ScreenMenus;
 import io.github.aratakileo.greenhouses.util.Namespace;
 import net.fabricmc.api.ModInitializer;
@@ -19,5 +20,6 @@ public class Greenhouses implements ModInitializer {
         CreativeModeTab.init();
         BlockEntities.init();
         ScreenMenus.init();
+        RecipeTypes.init();
     }
 }

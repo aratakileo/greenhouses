@@ -2,43 +2,36 @@ package io.github.aratakileo.greenhouses.block.entity;
 
 import io.github.aratakileo.greenhouses.block.Blocks;
 import io.github.aratakileo.greenhouses.container.GreenhouseScreenContainer;
+import io.github.aratakileo.greenhouses.recipe.greenhouse.GreenhouseRecipe;
+import io.github.aratakileo.greenhouses.recipe.RecipeTypes;
+import io.github.aratakileo.greenhouses.recipe.greenhouse.GreenhouseRecipeInput;
+import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import net.minecraft.core.BlockPos;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Objects;
+import java.util.Optional;
 
 public class GreenhouseBlockEntity extends ContainerBlockEntity {
-    public final static int GROUND_INPUT = 0,
-            WATER_INPUT = 1,
-            PLANT_INPUT = 2,
-            INPUT_SLOTS = 3,
-            OUTPUT_SLOTS = INPUT_SLOTS,
-            TOTAL_SLOTS = INPUT_SLOTS + OUTPUT_SLOTS,
-            MAX_PROGRESS = 100;
-
     private final ContainerData data;
 
     @CompoundDataField
     protected int progress = 0;
     @CompoundDataField
+    protected int maxProgress = 1;
+    @CompoundDataField
     protected int isGroundWet = 0;
-
-    private final static List<ItemStack> RECIPE_OUTPUT = List.of(
-            new ItemStack(Items.OAK_SAPLING, 3),
-            new ItemStack(Items.OAK_LOG, 5),
-            new ItemStack(Items.STICK, 5)
-    );
+    @CompoundDataField
+    protected int failCode = GreenhouseUtil.NO_FAILS_CODE;
 
     public GreenhouseBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         super(BlockEntities.GREENHOUSE_BLOCK_ENTITY_TYPE, blockPos, blockState, Blocks.GREENHOUSE, 6);
@@ -48,7 +41,9 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
             public int get(int i) {
                 return switch(i) {
                     case 0 -> progress;
-                    case 1 -> isGroundWet;
+                    case 1 -> maxProgress;
+                    case 2 -> isGroundWet;
+                    case 3 -> failCode;
                     default -> 0;
                 };
             }
@@ -57,13 +52,15 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
             public void set(int i, int value) {
                 switch(i) {
                     case 0 -> progress = value;
-                    case 1 -> isGroundWet = value;
+                    case 1 -> maxProgress = value;
+                    case 2 -> isGroundWet = value;
+                    case 3 -> failCode = value;
                 };
             }
 
             @Override
             public int getCount() {
-                return 2;
+                return GreenhouseUtil.CONTAINER_DATA_SIZE;
             }
         };
     }
@@ -76,22 +73,52 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
     public void tick(@NotNull Level lvl, @NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         if (lvl.isClientSide) return;
 
-        if (!canInsertItemIntoOutputStacks(OUTPUT_SLOTS)) {
+        if (!canInsertItemIntoOutputStacks()) {
             progress = 0;
+            failCode = GreenhouseUtil.NOT_ENOUGH_OUTPUT_SPACE_CODE;
             setChanged(lvl, blockPos, blockState);
             return;
         }
 
-        if (!hasRecipe()) {
+        if (getGroundInputStack().isEmpty() || getPlantInputStack().isEmpty()) {
             progress = 0;
+            failCode = GreenhouseUtil.NO_FAILS_CODE;
+            setChanged(lvl, blockPos, blockState);
+            return;
+        }
+
+        final var recipeOptional = getCurrentRecipe(false);
+
+        if (recipeOptional.isEmpty()) {
+            progress = 0;
+            setChanged(lvl, blockPos, blockState);
+
+            if (getCurrentRecipe(true).isEmpty()) {
+                failCode = GreenhouseUtil.INVALID_RECIPE_CODE;
+                return;
+            }
+
+            failCode = isGroundWet() ? GreenhouseUtil.DOES_NOT_NEED_WATER_CODE : GreenhouseUtil.NEEDS_WATER_CODE;
+            return;
+        }
+
+        final var recipe = recipeOptional.orElseThrow();
+
+        if (!canInsertItemIntoOutputStacks(recipe.value().getResultItems())) {
+            progress = 0;
+            failCode = GreenhouseUtil.NOT_ENOUGH_OUTPUT_SPACE_CODE;
+            setChanged(lvl, blockPos, blockState);
             return;
         }
 
         progress++;
+        maxProgress = recipeOptional.orElseThrow().value().getGrowthRate();
+        failCode = GreenhouseUtil.NO_FAILS_CODE;
+
         setChanged(lvl, blockPos, blockState);
 
-        if (progress > MAX_PROGRESS) {
-            addToOutputStacks(RECIPE_OUTPUT);
+        if (progress > maxProgress) {
+            addToOutputStacks(recipeOptional.orElseThrow().value().getResultItems());
             progress = 0;
         }
     }
@@ -100,11 +127,23 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
         return isGroundWet == 1;
     }
 
+    private @NotNull Optional<RecipeHolder<GreenhouseRecipe>> getCurrentRecipe(boolean invertWet) {
+        return Objects.requireNonNull(getLevel()).getRecipeManager().getRecipeFor(
+                RecipeTypes.GREENHOUSE_RECIPE_TYPE,
+                new GreenhouseRecipeInput(
+                        getPlantInputStack(),
+                        getGroundInputStack(),
+                        invertWet != isGroundWet()
+                ),
+                getLevel()
+        );
+    }
+
     private void addToOutputStacks(@NotNull List<ItemStack> itemStacks) {
         for (final var itemStack: itemStacks) {
             var firstEmptyStackIndex = -1;
 
-            for (var i = INPUT_SLOTS; i < TOTAL_SLOTS; i++) {
+            for (var i = GreenhouseUtil.INPUT_SLOTS; i < GreenhouseUtil.TOTAL_SLOTS; i++) {
                 final var outputStack = getItem(i);
 
                 if (outputStack.isEmpty() && firstEmptyStackIndex == -1) {
@@ -126,33 +165,25 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
     }
 
     private @NotNull ItemStack getGroundInputStack() {
-        return getItem(GROUND_INPUT);
-    }
-
-    private @NotNull ItemStack getWaterInputStack() {
-        return getItem(WATER_INPUT);
+        return getItem(GreenhouseUtil.GROUND_INPUT_SLOT);
     }
 
     private @NotNull ItemStack getPlantInputStack() {
-        return getItem(PLANT_INPUT);
+        return getItem(GreenhouseUtil.PLANT_INPUT_SLOT);
     }
 
     private @NotNull List<@NotNull ItemStack> getOutputStacks() {
-        return getItems().stream().skip(INPUT_SLOTS).toList();
+        return getItems().stream().skip(GreenhouseUtil.INPUT_SLOTS).toList();
     }
 
-    private boolean hasRecipe() {
-        return isGroundWet == 1 && getGroundInputStack().is(Items.DIRT) && getPlantInputStack().is(Items.OAK_SAPLING) && canInsertItemIntoOutputStacks(RECIPE_OUTPUT);
-    }
-
-    private boolean canInsertItemIntoOutputStacks(int slots) {
+    private boolean canInsertItemIntoOutputStacks() {
         int slotsScore = 0;
 
         for (final var outputStack: getOutputStacks())
             if (outputStack.getCount() < outputStack.getMaxStackSize() || outputStack.isEmpty())
                 slotsScore++;
 
-        return slotsScore >= slots;
+        return slotsScore >= GreenhouseUtil.OUTPUT_SLOTS;
     }
 
     private boolean canInsertItemIntoOutputStacks(@NotNull List<ItemStack> itemStacks) {

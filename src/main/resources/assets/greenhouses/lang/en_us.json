@@ -15,5 +15,10 @@
   "block.greenhouses.coke_furnace": "Coke furnace",
   "item.greenhouses.coke_brick": "Coke brick",
   "item.greenhouses.coked_coal": "Coked coal",
-  "item.greenhouses.creosote_bucket": "Creosote bucket"
+  "item.greenhouses.creosote_bucket": "Creosote bucket",
+  "gui.greenhouses.tooltip.grow_progress": "Grow progress: %s",
+  "gui.greenhouses.tooltip.growing_failed_1": "Invalid growing recipe",
+  "gui.greenhouses.tooltip.growing_failed_2": "This plant does not need water",
+  "gui.greenhouses.tooltip.growing_failed_3": "This plant needs water",
+  "gui.greenhouses.tooltip.growing_failed_4": "Not enough output slots space"
 }

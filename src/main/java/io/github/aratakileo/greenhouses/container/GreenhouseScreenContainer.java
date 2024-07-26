@@ -1,11 +1,11 @@
 package io.github.aratakileo.greenhouses.container;
 
-import io.github.aratakileo.greenhouses.block.entity.GreenhouseBlockEntity;
 import io.github.aratakileo.greenhouses.container.slot.GroundSlot;
 import io.github.aratakileo.greenhouses.container.slot.PlantSlot;
 import io.github.aratakileo.greenhouses.container.slot.AddWaterSlot;
 import io.github.aratakileo.greenhouses.container.slot.ResultSlot;
 import io.github.aratakileo.greenhouses.screen.ScreenMenus;
+import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -22,7 +22,12 @@ public class GreenhouseScreenContainer extends AbstractContainerMenu {
     private final ContainerData data;
 
     public GreenhouseScreenContainer(int syncId, @NotNull Inventory inventory) {
-        this(syncId, inventory, new SimpleContainer(6), new SimpleContainerData(2));
+        this(
+                syncId,
+                inventory,
+                new SimpleContainer(GreenhouseUtil.TOTAL_SLOTS),
+                new SimpleContainerData(GreenhouseUtil.CONTAINER_DATA_SIZE)
+        );
     }
 
     public GreenhouseScreenContainer(
@@ -35,23 +40,23 @@ public class GreenhouseScreenContainer extends AbstractContainerMenu {
         this.container = container;
         this.data = containerData;
 
-        checkContainerSize(container, GreenhouseBlockEntity.TOTAL_SLOTS);
-        checkContainerDataCount(containerData, 2);
+        checkContainerSize(container, GreenhouseUtil.TOTAL_SLOTS);
+        checkContainerDataCount(data, GreenhouseUtil.CONTAINER_DATA_SIZE);
 
-        addSlot(new GroundSlot(container, GreenhouseBlockEntity.GROUND_INPUT, 70, 45));
+        addSlot(new PlantSlot(container, GreenhouseUtil.PLANT_INPUT_SLOT, 70, 24));
+
+        addSlot(new GroundSlot(container, GreenhouseUtil.GROUND_INPUT_SLOT, 70, 45));
 
         addSlot(new AddWaterSlot(
                 this,
                 container,
-                GreenhouseBlockEntity.WATER_INPUT,
+                GreenhouseUtil.WATER_INPUT_SLOT,
                 50,
                 35
         ));
 
-        addSlot(new PlantSlot(container, GreenhouseBlockEntity.PLANT_INPUT, 70, 24));
-
-        for (var i = GreenhouseBlockEntity.INPUT_SLOTS; i < GreenhouseBlockEntity.TOTAL_SLOTS; i++) {
-            final var localIndex = i - GreenhouseBlockEntity.INPUT_SLOTS;
+        for (var i = GreenhouseUtil.INPUT_SLOTS; i < GreenhouseUtil.TOTAL_SLOTS; i++) {
+            final var localIndex = i - GreenhouseUtil.INPUT_SLOTS;
             addSlot(new ResultSlot(container, i, 124, 17 * (localIndex + 1) + localIndex));
         }
 
@@ -89,10 +94,10 @@ public class GreenhouseScreenContainer extends AbstractContainerMenu {
     }
 
     public boolean isGroundWet() {
-        return data.get(1) == 1;
+        return data.get(2) == 1;
     }
     public void setGroundWet(boolean isWet) {
-        data.set(1, isWet ? 1 : 0);
+        data.set(2, isWet ? 1 : 0);
     }
 
     public boolean isGrowing() {
@@ -100,19 +105,27 @@ public class GreenhouseScreenContainer extends AbstractContainerMenu {
     }
 
     public float getProgress() {
-        return (float) data.get(0) / (float) GreenhouseBlockEntity.MAX_PROGRESS;
+        return (float) data.get(0) / (float) data.get(1);
+    }
+
+    public int getFailCode() {
+        return data.get(3);
+    }
+
+    public boolean isInvalidRecipe() {
+        return data.get(3) >= GreenhouseUtil.INVALID_RECIPE_CODE;
     }
 
     public boolean isBucketSlotEmpty() {
-        return !getSlot(GreenhouseBlockEntity.WATER_INPUT).hasItem();
+        return !getSlot(GreenhouseUtil.WATER_INPUT_SLOT).hasItem();
     }
 
     public boolean isPlantSlotEmpty() {
-        return !getSlot(GreenhouseBlockEntity.PLANT_INPUT).hasItem();
+        return !getSlot(GreenhouseUtil.PLANT_INPUT_SLOT).hasItem();
     }
 
     public boolean isGroundSlotEmpty() {
-        return !getSlot(GreenhouseBlockEntity.GROUND_INPUT).hasItem();
+        return !getSlot(GreenhouseUtil.GROUND_INPUT_SLOT).hasItem();
     }
 
     private void addPlayerInventory(@NotNull Inventory inventory) {

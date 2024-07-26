@@ -3,6 +3,7 @@ package io.github.aratakileo.greenhouses.block;
 import com.mojang.serialization.MapCodec;
 import io.github.aratakileo.greenhouses.block.entity.BlockEntities;
 import io.github.aratakileo.greenhouses.block.entity.GreenhouseBlockEntity;
+import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -59,6 +60,7 @@ public class GreenhouseBlock extends EntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
+        GreenhouseUtil.init(level);
         return createTickerHelper(blockEntityType, BlockEntities.GREENHOUSE_BLOCK_ENTITY_TYPE, ((lvl, blockPos, _blockState, blockEntity) -> blockEntity.tick(lvl, blockPos, _blockState)));
     }
 

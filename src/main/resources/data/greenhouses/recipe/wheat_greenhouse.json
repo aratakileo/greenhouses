@@ -1,0 +1,22 @@
+{
+  "type": "greenhouses:greenhouse_growing",
+  "growth_rate": 1000,
+  "needs_wet_ground": true,
+  "plant": {
+    "item": "minecraft:wheat_seeds"
+  },
+  "ground": {
+    "item": "minecraft:farmland"
+  },
+  "result": [
+    {
+      "item": "minecraft:wheat_seeds",
+      "min_count": 1,
+      "max_count": 3
+    },
+    {
+      "item": "minecraft:wheat",
+      "min_count": 1
+    }
+  ]
+}

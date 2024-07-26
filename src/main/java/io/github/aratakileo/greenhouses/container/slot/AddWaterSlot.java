@@ -30,13 +30,13 @@ public class AddWaterSlot extends GreenhouseInputSlot {
         if (menu.isGroundWet() && insertableStack.is(Items.BUCKET)) {
             SoundUtil.playGuiSound(SoundEvents.BUCKET_FILL);
             menu.setGroundWet(false);
-            return new ItemStack(Items.WATER_BUCKET, 1);
+            return new ItemStack(Items.WATER_BUCKET);
         }
 
         if (!menu.isGroundWet() && insertableStack.is(Items.WATER_BUCKET)) {
             SoundUtil.playGuiSound(SoundEvents.BUCKET_EMPTY);
             menu.setGroundWet(true);
-            return new ItemStack(Items.BUCKET, 1);
+            return new ItemStack(Items.BUCKET);
         }
 
         return insertableStack;
