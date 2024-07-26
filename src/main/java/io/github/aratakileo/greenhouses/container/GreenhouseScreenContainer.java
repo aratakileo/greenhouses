@@ -10,11 +10,9 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.SimpleContainerData;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 public class GreenhouseScreenContainer extends AbstractContainerMenu {
@@ -67,15 +65,55 @@ public class GreenhouseScreenContainer extends AbstractContainerMenu {
     }
 
     @Override
-    public @NotNull ItemStack quickMoveStack(Player player, int invSlot) {
+    public void clicked(int slotIndex, int button, @NotNull ClickType clickType, @NotNull Player player) {
+        if (slotIndex == GreenhouseUtil.GROUND_INPUT_SLOT && getSlot(slotIndex) instanceof GroundSlot slot) {
+            if (clickType == ClickType.PICKUP) {
+                if (!getCarried().isEmpty() && slot.mayUseHoeOn(getCarried())) {
+                    slot.useHoe(getCarried());
+                    return;
+                }
+
+                if (slot.shouldPrepareBeforePickup())
+                    slot.prepareBeforePickup();
+            }
+
+            if (clickType == ClickType.QUICK_MOVE && slot.shouldPrepareBeforePickup())
+                slot.prepareBeforePickup();
+        }
+
+        if (slotIndex >= GreenhouseUtil.TOTAL_SLOTS && clickType == ClickType.QUICK_MOVE) {
+            final var sourceSlot = slots.get(slotIndex);
+
+            if (!sourceSlot.hasItem() || !sourceSlot.mayPickup(player)) return;
+
+            final var sourceSlotItem = sourceSlot.getItem();
+
+            for (var greenhouseSlotIndex = 0; greenhouseSlotIndex < GreenhouseUtil.TOTAL_SLOTS; greenhouseSlotIndex++) {
+                final var currentSlot = getSlot(greenhouseSlotIndex);
+
+                if (!currentSlot.mayPlace(sourceSlotItem)) continue;
+
+                final var remainingSlotStack = currentSlot.safeInsert(sourceSlotItem);
+                sourceSlot.set(remainingSlotStack);
+                sourceSlot.setChanged();
+                return;
+            }
+            return;
+        }
+
+        super.clicked(slotIndex, button, clickType, player);
+    }
+
+    @Override
+    public @NotNull ItemStack quickMoveStack(Player player, int slotIndex) {
         var newStack = ItemStack.EMPTY;
-        final var slot = slots.get(invSlot);
+        final var slot = slots.get(slotIndex);
 
         if (slot.hasItem()) {
             final var itemStack = slot.getItem();
             newStack = itemStack.copy();
 
-            if (invSlot < container.getContainerSize()) {
+            if (slotIndex < container.getContainerSize()) {
                 if (!this.moveItemStackTo(itemStack, this.container.getContainerSize(), this.slots.size(), true))
                     return ItemStack.EMPTY;
             } else if (!this.moveItemStackTo(newStack, 0, this.container.getContainerSize(), false))

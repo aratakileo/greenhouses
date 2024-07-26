@@ -24,6 +24,12 @@ public class AddWaterSlot extends GreenhouseInputSlot {
     }
 
     @Override
+    public boolean mayPlace(@NotNull ItemStack insertableStack) {
+        return menu.isGroundWet() && insertableStack.is(Items.BUCKET)
+                        || !menu.isGroundWet() && insertableStack.is(Items.WATER_BUCKET);
+    }
+
+    @Override
     public @NotNull ItemStack safeInsert(@NotNull ItemStack insertableStack, int count) {
         if (insertableStack.isEmpty()) return insertableStack;
 
