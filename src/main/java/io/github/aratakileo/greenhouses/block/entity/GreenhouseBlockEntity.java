@@ -1,5 +1,6 @@
 package io.github.aratakileo.greenhouses.block.entity;
 
+import io.github.aratakileo.greenhouses.ContainerAutoData;
 import io.github.aratakileo.greenhouses.block.Blocks;
 import io.github.aratakileo.greenhouses.container.GreenhouseScreenContainer;
 import io.github.aratakileo.greenhouses.recipe.GreenhouseRecipe;
@@ -10,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
@@ -24,16 +24,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class GreenhouseBlockEntity extends ContainerBlockEntity {
-    private final ContainerData data;
-
     @CompoundDataField
-    protected int progress = 0;
-    @CompoundDataField
-    protected int maxProgress = 1;
-    @CompoundDataField
-    protected int isGroundWet = 0;
-    @CompoundDataField
-    protected int failCode = GreenhouseUtil.NO_FAILS_CODE;
+    private final GreenhouseContainerData data = new GreenhouseContainerData();
 
     public GreenhouseBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         super(
@@ -44,34 +36,6 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
                 GreenhouseUtil.TOTAL_SLOTS,
                 GreenhouseUtil.INPUT_SLOTS
         );
-
-        data = new ContainerData() {
-            @Override
-            public int get(int i) {
-                return switch(i) {
-                    case 0 -> progress;
-                    case 1 -> maxProgress;
-                    case 2 -> isGroundWet;
-                    case 3 -> failCode;
-                    default -> 0;
-                };
-            }
-
-            @Override
-            public void set(int i, int value) {
-                switch(i) {
-                    case 0 -> progress = value;
-                    case 1 -> maxProgress = value;
-                    case 2 -> isGroundWet = value;
-                    case 3 -> failCode = value;
-                };
-            }
-
-            @Override
-            public int getCount() {
-                return GreenhouseUtil.CONTAINER_DATA_SIZE;
-            }
-        };
     }
 
     @Override
@@ -83,15 +47,15 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
         if (lvl.isClientSide) return;
 
         if (!canInsertItemIntoOutputStacks()) {
-            progress = 0;
-            failCode = GreenhouseUtil.NOT_ENOUGH_OUTPUT_SPACE_CODE;
+            data.progress = 0;
+            data.failCode = GreenhouseUtil.NOT_ENOUGH_OUTPUT_SPACE_CODE;
             setChanged(lvl, blockPos, blockState);
             return;
         }
 
         if (getGroundInputStack().isEmpty() || getPlantInputStack().isEmpty()) {
-            progress = 0;
-            failCode = GreenhouseUtil.NO_FAILS_CODE;
+            data.progress = 0;
+            data.failCode = GreenhouseUtil.NO_FAILS_CODE;
             setChanged(lvl, blockPos, blockState);
             return;
         }
@@ -99,41 +63,41 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
         final var recipeOptional = getCurrentRecipe(false);
 
         if (recipeOptional.isEmpty()) {
-            progress = 0;
+            data.progress = 0;
             setChanged(lvl, blockPos, blockState);
 
             if (getCurrentRecipe(true).isEmpty()) {
-                failCode = GreenhouseUtil.INVALID_RECIPE_CODE;
+                data.failCode = GreenhouseUtil.INVALID_RECIPE_CODE;
                 return;
             }
 
-            failCode = isGroundWet() ? GreenhouseUtil.DOES_NOT_NEED_WATER_CODE : GreenhouseUtil.NEEDS_WATER_CODE;
+            data.failCode = isGroundWet() ? GreenhouseUtil.DOES_NOT_NEED_WATER_CODE : GreenhouseUtil.NEEDS_WATER_CODE;
             return;
         }
 
         final var recipe = recipeOptional.orElseThrow();
 
         if (!canInsertItemIntoOutputStacks(recipe.value().getResultItems())) {
-            progress = 0;
-            failCode = GreenhouseUtil.NOT_ENOUGH_OUTPUT_SPACE_CODE;
+            data.progress = 0;
+            data.failCode = GreenhouseUtil.NOT_ENOUGH_OUTPUT_SPACE_CODE;
             setChanged(lvl, blockPos, blockState);
             return;
         }
 
-        progress++;
-        maxProgress = recipeOptional.orElseThrow().value().getGrowthRate();
-        failCode = GreenhouseUtil.NO_FAILS_CODE;
+        data.progress++;
+        data.maxProgress = recipeOptional.orElseThrow().value().getGrowthRate();
+        data.failCode = GreenhouseUtil.NO_FAILS_CODE;
 
         setChanged(lvl, blockPos, blockState);
 
-        if (progress > maxProgress) {
+        if (data.progress > data.maxProgress) {
             addToOutputStacks(recipeOptional.orElseThrow().value().getResultItems());
-            progress = 0;
+            data.progress = 0;
         }
     }
 
     public boolean isGroundWet() {
-        return isGroundWet == 1;
+        return data.isGroundWet;
     }
 
     private @NotNull Optional<RecipeHolder<GreenhouseRecipe>> getCurrentRecipe(boolean invertWet) {
@@ -241,5 +205,19 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
     @Override
     public boolean canTakeItemThroughFace(int slotIndex, @NotNull ItemStack itemStack, @NotNull Direction direction) {
         return super.canTakeItemThroughFace(slotIndex, itemStack, direction);
+    }
+
+    public static final class GreenhouseContainerData extends ContainerAutoData {
+        @DataField
+        public int progress = 0;
+
+        @DataField
+        public int maxProgress = 1;
+
+        @DataField
+        public boolean isGroundWet = false;
+
+        @DataField
+        public int failCode = GreenhouseUtil.NO_FAILS_CODE;
     }
 }

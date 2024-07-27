@@ -1,5 +1,6 @@
 package io.github.aratakileo.greenhouses.block.entity;
 
+import io.github.aratakileo.greenhouses.ContainerAutoData;
 import io.github.aratakileo.greenhouses.util.Classes;
 import io.github.aratakileo.greenhouses.util.Strings;
 import net.minecraft.core.BlockPos;
@@ -88,70 +89,98 @@ public abstract class ContainerBlockEntity extends BaseContainerBlockEntity impl
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+    protected void saveAdditional(@NotNull CompoundTag compoundTag, @NotNull HolderLookup.Provider provider) {
         super.saveAdditional(compoundTag, provider);
 
-        for (final var field: this.getClass().getDeclaredFields())
-            if (field.isAnnotationPresent(CompoundDataField.class)) {
-                if (hasNotCompoundDataFieldSupportedType(field))
-                    throw new RuntimeException(
-                            "Compound data field `%s` has unsupported type `%s`".formatted(
-                                    Classes.getFieldView(field),
-                                    field.getType()
-                            )
-                    );
-
-                final var attributeName = getCompoundAttributeName(field);
-
-                try {
-                    if (field.getType() == boolean.class)
-                        compoundTag.putBoolean(attributeName, field.getBoolean(this));
-                    else compoundTag.putInt(attributeName, field.getInt(this));
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+        for (final var field: this.getClass().getDeclaredFields()) {
+            if (field.isAnnotationPresent(CompoundDataField.class))
+                saveFieldData(compoundTag, this, field, null);
+        }
 
         ContainerHelper.saveAllItems(compoundTag, items, provider);
     }
 
+    private void saveFieldData(
+            @NotNull CompoundTag compoundTag,
+            @NotNull Object instance,
+            @NotNull Field field,
+            @Nullable String prefix
+    ) {
+        field.setAccessible(true);
+
+        if (hasUnsupportedType(field))
+            throw new RuntimeException("Compound data field `%s` has unsupported type `%s`".formatted(
+                    Classes.getFieldView(field),
+                    field.getType()
+            ));
+
+        final var attributeName = getCompoundAttributeName(field, prefix);
+
+        try {
+            if (field.getType() == boolean.class)
+                compoundTag.putBoolean(attributeName, field.getBoolean(instance));
+            else if (field.getType() == int.class)
+                compoundTag.putInt(attributeName, field.getInt(instance));
+            else for (final var subfield: ((ContainerAutoData)field.get(instance)).fields)
+                saveFieldData(compoundTag, field.get(instance), subfield, field.getName());
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
-    protected void loadAdditional(CompoundTag compoundTag, HolderLookup.Provider provider) {
+    protected void loadAdditional(@NotNull CompoundTag compoundTag, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(compoundTag, provider);
 
         ContainerHelper.loadAllItems(compoundTag, items, provider);
 
-        for (final var field: this.getClass().getDeclaredFields())
-            if (field.isAnnotationPresent(CompoundDataField.class)) {
-                if (hasNotCompoundDataFieldSupportedType(field))
-                    throw new RuntimeException(
-                            "Compound data field `%s` has unsupported type `%s`".formatted(
-                                    Classes.getFieldView(field),
-                                    field.getType()
-                            )
-                    );
-
-                final var attributeName = getCompoundAttributeName(field);
-
-                try {
-                    if (field.getType() == boolean.class)
-                        field.setBoolean(this, compoundTag.getBoolean(attributeName));
-                    else field.setInt(this, compoundTag.getInt(attributeName));
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+        for (final var field: this.getClass().getDeclaredFields()) {
+            if (field.isAnnotationPresent(CompoundDataField.class))
+                loadFieldData(compoundTag, this, field, null);
+        }
     }
 
-    private String getCompoundAttributeName(@NotNull Field field) {
+    private void loadFieldData(
+            @NotNull CompoundTag compoundTag,
+            @NotNull Object instance,
+            @NotNull Field field,
+            @Nullable String prefix
+    ) {
+        field.setAccessible(true);
+
+        if (hasUnsupportedType(field))
+            throw new RuntimeException("Compound data field `%s` has unsupported type `%s`".formatted(
+                    Classes.getFieldView(field),
+                    field.getType()
+            ));
+
+        final var attributeName = getCompoundAttributeName(field, prefix);
+
+        try {
+            if (field.getType() == boolean.class)
+                field.setBoolean(instance, compoundTag.getBoolean(attributeName));
+            else if (field.getType() == int.class)
+                field.setInt(instance, compoundTag.getInt(attributeName));
+            else for (final var subfield: ((ContainerAutoData)field.get(instance)).fields)
+                loadFieldData(compoundTag, field.get(instance), subfield, field.getName());
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String getCompoundAttributeName(@NotNull Field field, @Nullable String prefix) {
         return "%s.%s".formatted(
                 BuiltInRegistries.BLOCK.getKey(block).toString(),
-                Strings.camelToSnake(field.getName())
+                (
+                        prefix != null && !prefix.isEmpty() ? "%s.".formatted(Strings.camelToSnake(prefix)) : ""
+                ) + Strings.camelToSnake(field.getName())
         );
     }
 
-    private static boolean hasNotCompoundDataFieldSupportedType(@NotNull Field field) {
-        return field.getType() == boolean.class || field.getType() == Integer.class;
+    private static boolean hasUnsupportedType(@NotNull Field field) {
+        return field.getType() != boolean.class
+                && field.getType() != int.class
+                && !ContainerAutoData.class.isAssignableFrom(field.getType());
     }
 
     @Retention(RetentionPolicy.RUNTIME)

@@ -1,5 +1,6 @@
 package io.github.aratakileo.greenhouses.container;
 
+import io.github.aratakileo.greenhouses.block.entity.GreenhouseBlockEntity;
 import io.github.aratakileo.greenhouses.container.slot.GroundSlot;
 import io.github.aratakileo.greenhouses.container.slot.PlantSlot;
 import io.github.aratakileo.greenhouses.container.slot.AddWaterSlot;
@@ -16,14 +17,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class GreenhouseScreenContainer extends AbstractContainerMenu {
     private final Container container;
-    private final ContainerData data;
+    private final GreenhouseBlockEntity.GreenhouseContainerData data;
 
     public GreenhouseScreenContainer(int syncId, @NotNull Inventory inventory) {
         this(
                 syncId,
                 inventory,
                 new SimpleContainer(GreenhouseUtil.TOTAL_SLOTS),
-                new SimpleContainerData(GreenhouseUtil.CONTAINER_DATA_SIZE)
+                new GreenhouseBlockEntity.GreenhouseContainerData()
         );
     }
 
@@ -31,7 +32,7 @@ public class GreenhouseScreenContainer extends AbstractContainerMenu {
             int syncId,
             @NotNull Inventory playerInventory,
             @NotNull Container container,
-            @NotNull ContainerData containerData
+            @NotNull GreenhouseBlockEntity.GreenhouseContainerData containerData
     ) {
         super(ScreenMenus.GREENHOUSE_SCREEN_MENU, syncId);
         this.container = container;
@@ -131,26 +132,26 @@ public class GreenhouseScreenContainer extends AbstractContainerMenu {
     }
 
     public boolean isGroundWet() {
-        return data.get(2) == 1;
+        return data.isGroundWet;
     }
     public void setGroundWet(boolean isWet) {
-        data.set(2, isWet ? 1 : 0);
+        data.isGroundWet = isWet;
     }
 
     public boolean isGrowing() {
-        return data.get(0) > 0;
+        return data.progress > 0;
     }
 
     public float getProgress() {
-        return (float) data.get(0) / (float) data.get(1);
+        return (float) data.progress / (float) data.maxProgress;
     }
 
     public int getFailCode() {
-        return data.get(3);
+        return data.failCode;
     }
 
     public boolean isInvalidRecipe() {
-        return data.get(3) >= GreenhouseUtil.INVALID_RECIPE_CODE;
+        return data.failCode >= GreenhouseUtil.INVALID_RECIPE_CODE;
     }
 
     public boolean isBucketSlotEmpty() {
