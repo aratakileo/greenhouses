@@ -3,6 +3,7 @@ package io.github.aratakileo.greenhouses.recipe.greenhouse;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.aratakileo.greenhouses.recipe.ItemRange;
 import io.github.aratakileo.greenhouses.recipe.MultyOutputRecipe;
 import io.github.aratakileo.greenhouses.recipe.RecipeSerializers;
 import io.github.aratakileo.greenhouses.recipe.RecipeTypes;
@@ -22,14 +23,14 @@ import java.util.List;
 public class GreenhouseRecipe extends MultyOutputRecipe<GreenhouseRecipeInput> {
     protected final Ingredient plant;
     protected final Ingredient ground;
-    protected final List<ItemWithRangeCount> result;
+    protected final List<ItemRange> result;
     protected final boolean needsWetGround;
     protected final int growthRate;
 
     public GreenhouseRecipe(
             @NotNull Ingredient plant,
             @NotNull Ingredient ground,
-            @NotNull List<ItemWithRangeCount> result,
+            @NotNull List<ItemRange> result,
             boolean needsWetGround,
             int growthRate
     ) {
@@ -60,7 +61,7 @@ public class GreenhouseRecipe extends MultyOutputRecipe<GreenhouseRecipeInput> {
 
     @Override
     public @NotNull List<ItemStack> getResultItems() {
-        return result.stream().map(ItemWithRangeCount::asItemStack).toList();
+        return result.stream().map(ItemRange::getItemStack).toList();
     }
 
     @Override
@@ -90,8 +91,8 @@ public class GreenhouseRecipe extends MultyOutputRecipe<GreenhouseRecipeInput> {
     }
 
     public static class Serializer implements RecipeSerializer<GreenhouseRecipe> {
-        private static final Codec<List<ItemWithRangeCount>> OUTPUTS_CODEC = Codec.list(
-                ItemWithRangeCount.CODEC.codec(),
+        private static final Codec<List<ItemRange>> OUTPUTS_CODEC = Codec.list(
+                ItemRange.CODEC.codec(),
                 1,
                 GreenhouseUtil.OUTPUT_SLOTS
         );
@@ -114,7 +115,7 @@ public class GreenhouseRecipe extends MultyOutputRecipe<GreenhouseRecipeInput> {
             return new GreenhouseRecipe(
                     Ingredient.CONTENTS_STREAM_CODEC.decode(buffer),
                     Ingredient.CONTENTS_STREAM_CODEC.decode(buffer),
-                    buffer.readList(_buffer -> ItemWithRangeCount.STREAM_CODEC.decode((RegistryFriendlyByteBuf) _buffer)),
+                    buffer.readList(_buffer -> ItemRange.STREAM_CODEC.decode((RegistryFriendlyByteBuf) _buffer)),
                     buffer.readBoolean(),
                     buffer.readInt()
             );
@@ -126,7 +127,7 @@ public class GreenhouseRecipe extends MultyOutputRecipe<GreenhouseRecipeInput> {
             Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.ground);
             buffer.writeCollection(
                     recipe.result,
-                    (_buffer, value) -> ItemWithRangeCount.STREAM_CODEC.encode((RegistryFriendlyByteBuf) _buffer, value)
+                    (_buffer, value) -> ItemRange.STREAM_CODEC.encode((RegistryFriendlyByteBuf) _buffer, value)
             );
             buffer.writeBoolean(recipe.needsWetGround);
             buffer.writeInt(recipe.growthRate);
