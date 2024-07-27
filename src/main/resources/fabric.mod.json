@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "id": "greenhouses",
   "version": "${version}",
-
   "name": "Arataki's greenhouses",
   "description": "Little pretty functional blocks of greenhouse",
   "authors": [
