@@ -1,5 +1,6 @@
-package io.github.aratakileo.greenhouses;
+package io.github.aratakileo.greenhouses.item;
 
+import io.github.aratakileo.greenhouses.Greenhouses;
 import io.github.aratakileo.greenhouses.block.Blocks;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;

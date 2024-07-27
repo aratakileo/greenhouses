@@ -1,5 +1,6 @@
 package io.github.aratakileo.greenhouses.recipe;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.aratakileo.greenhouses.util.RandomInt;
@@ -13,6 +14,8 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public final class ItemRange {
     final Item item;
@@ -40,8 +43,8 @@ public final class ItemRange {
         return item;
     }
 
-    public @NotNull Holder<Item> getItemHolder() {
-        return BuiltInRegistries.ITEM.createIntrusiveHolder(item);
+    public @NotNull Holder.Reference<Item> getItemHolder() {
+        return BuiltInRegistries.ITEM.getHolder(BuiltInRegistries.ITEM.getId(item)).orElseThrow();
     }
 
     public @NotNull ItemStack getItemStack() {
@@ -95,6 +98,10 @@ public final class ItemRange {
         return of(itemHolder, minCount, maxCount);
     }
 
+    public static @NotNull Codec<List<ItemRange>> getListCodec(int minSize, int maxSize) {
+        return Codec.list(ItemRange.CODEC.codec(), minSize, maxSize);
+    }
+
     public static final MapCodec<ItemRange> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
             ItemStack.ITEM_NON_AIR_CODEC.fieldOf("item").forGetter(ItemRange::getItemHolder),
             ExtraCodecs.intRange(0, 99)
@@ -120,6 +127,21 @@ public final class ItemRange {
             ByteBufCodecs.holderRegistry(Registries.ITEM).encode(buffer, itemRange.getItemHolder());
             buffer.writeInt(itemRange.minCount);
             buffer.writeInt(itemRange.maxCount);
+        }
+    };
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, List<ItemRange>> LIST_STREAM_CODEC = new StreamCodec<>() {
+        @Override
+        public @NotNull List<ItemRange> decode(@NotNull RegistryFriendlyByteBuf buffer) {
+            return buffer.readList(_buffer -> ItemRange.STREAM_CODEC.decode((RegistryFriendlyByteBuf) _buffer));
+        }
+
+        @Override
+        public void encode(@NotNull RegistryFriendlyByteBuf buffer, @NotNull List<ItemRange> list) {
+            buffer.writeCollection(
+                    list,
+                    (_buffer, value) -> ItemRange.STREAM_CODEC.encode((RegistryFriendlyByteBuf) _buffer, value)
+            );
         }
     };
 }

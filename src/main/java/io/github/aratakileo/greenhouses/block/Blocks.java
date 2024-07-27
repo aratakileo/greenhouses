@@ -1,7 +1,7 @@
 package io.github.aratakileo.greenhouses.block;
 
 import io.github.aratakileo.greenhouses.Greenhouses;
-import io.github.aratakileo.greenhouses.Items;
+import io.github.aratakileo.greenhouses.item.Items;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Registry;

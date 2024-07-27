@@ -1,5 +1,7 @@
-package io.github.aratakileo.greenhouses;
+package io.github.aratakileo.greenhouses.item;
 
+import io.github.aratakileo.greenhouses.Greenhouses;
+import io.github.aratakileo.greenhouses.util.FuelController;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BucketItem;

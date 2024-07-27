@@ -1,4 +1,4 @@
-package io.github.aratakileo.greenhouses;
+package io.github.aratakileo.greenhouses.util;
 
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.world.item.Item;
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public final class FuelController {
-    public static Map<Item, Integer> getFuel() {
+    public static @NotNull Map<Item, Integer> getFuel() {
         return AbstractFurnaceBlockEntity.getFuel();
     }
 

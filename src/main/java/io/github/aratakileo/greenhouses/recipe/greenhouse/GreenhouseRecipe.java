@@ -91,47 +91,43 @@ public class GreenhouseRecipe extends MultyOutputRecipe<GreenhouseRecipeInput> {
     }
 
     public static class Serializer implements RecipeSerializer<GreenhouseRecipe> {
-        private static final Codec<List<ItemRange>> OUTPUTS_CODEC = Codec.list(
-                ItemRange.CODEC.codec(),
-                1,
-                GreenhouseUtil.OUTPUT_SLOTS
-        );
         private static final MapCodec<GreenhouseRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-                Ingredient.CODEC.fieldOf("plant").forGetter(recipe -> recipe.plant),
-                Ingredient.CODEC.fieldOf("ground").forGetter(recipe -> recipe.ground),
-                OUTPUTS_CODEC.fieldOf("result").forGetter(recipe -> recipe.result),
+                Ingredient.CODEC.fieldOf("plant").forGetter(GreenhouseRecipe::getPlant),
+                Ingredient.CODEC.fieldOf("ground").forGetter(GreenhouseRecipe::getGround),
+                ItemRange.getListCodec(1, GreenhouseUtil.OUTPUT_SLOTS)
+                        .fieldOf("result")
+                        .forGetter(recipe -> recipe.result),
                 Codec.BOOL.optionalFieldOf(
                         "needs_wet_ground",
                         false
-                ).forGetter(recipe -> recipe.needsWetGround),
+                ).forGetter(GreenhouseRecipe::needsWetGround),
                 Codec.INT.optionalFieldOf(
                         "growth_rate",
                         GreenhouseUtil.RECIPE_DEFAULT_GROWTH_RATE
-                ).forGetter(recipe -> recipe.growthRate)
+                ).forGetter(GreenhouseRecipe::getGrowthRate)
         ).apply(builder, GreenhouseRecipe::new));
 
-        public GreenhouseRecipe fromNetwork(@NotNull RegistryFriendlyByteBuf buffer)
-        {
-            return new GreenhouseRecipe(
-                    Ingredient.CONTENTS_STREAM_CODEC.decode(buffer),
-                    Ingredient.CONTENTS_STREAM_CODEC.decode(buffer),
-                    buffer.readList(_buffer -> ItemRange.STREAM_CODEC.decode((RegistryFriendlyByteBuf) _buffer)),
-                    buffer.readBoolean(),
-                    buffer.readInt()
-            );
-        }
+        private static final StreamCodec<RegistryFriendlyByteBuf, GreenhouseRecipe> STREAM_CODEC = new StreamCodec<>() {
+            @Override
+            public @NotNull GreenhouseRecipe decode(@NotNull RegistryFriendlyByteBuf buffer) {
+                return new GreenhouseRecipe(
+                        Ingredient.CONTENTS_STREAM_CODEC.decode(buffer),
+                        Ingredient.CONTENTS_STREAM_CODEC.decode(buffer),
+                        ItemRange.LIST_STREAM_CODEC.decode(buffer),
+                        buffer.readBoolean(),
+                        buffer.readInt()
+                );
+            }
 
-        public void toNetwork(@NotNull RegistryFriendlyByteBuf buffer, @NotNull GreenhouseRecipe recipe)
-        {
-            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.plant);
-            Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.ground);
-            buffer.writeCollection(
-                    recipe.result,
-                    (_buffer, value) -> ItemRange.STREAM_CODEC.encode((RegistryFriendlyByteBuf) _buffer, value)
-            );
-            buffer.writeBoolean(recipe.needsWetGround);
-            buffer.writeInt(recipe.growthRate);
-        }
+            @Override
+            public void encode(@NotNull RegistryFriendlyByteBuf buffer, @NotNull GreenhouseRecipe recipe) {
+                Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.plant);
+                Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.ground);
+                ItemRange.LIST_STREAM_CODEC.encode(buffer, recipe.result);
+                buffer.writeBoolean(recipe.needsWetGround);
+                buffer.writeInt(recipe.growthRate);
+            }
+        };
 
         @Override
         public @NotNull MapCodec<GreenhouseRecipe> codec() {
@@ -140,7 +136,7 @@ public class GreenhouseRecipe extends MultyOutputRecipe<GreenhouseRecipeInput> {
 
         @Override
         public @NotNull StreamCodec<RegistryFriendlyByteBuf, GreenhouseRecipe> streamCodec() {
-            return StreamCodec.of(this::toNetwork, this::fromNetwork);
+            return STREAM_CODEC;
         }
     }
 }
