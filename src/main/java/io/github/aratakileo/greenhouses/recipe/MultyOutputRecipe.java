@@ -29,7 +29,7 @@ public abstract class MultyOutputRecipe<T extends RecipeInput> implements Recipe
 
     @Override
     public final @NotNull ItemStack getResultItem(HolderLookup.Provider provider) {
-        throw new RuntimeException("Don't user this method!");
+        throw new RuntimeException("Don't use this method!");
     }
 
     public abstract @NotNull List<ItemStack> getResultItems();
