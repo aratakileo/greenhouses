@@ -1,7 +1,6 @@
 package io.github.aratakileo.greenhouses.recipe;
 
 import io.github.aratakileo.greenhouses.Greenhouses;
-import io.github.aratakileo.greenhouses.recipe.greenhouse.GreenhouseRecipe;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.crafting.Recipe;

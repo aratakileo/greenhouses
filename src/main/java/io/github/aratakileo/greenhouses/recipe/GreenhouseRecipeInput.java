@@ -1,4 +1,4 @@
-package io.github.aratakileo.greenhouses.recipe.greenhouse;
+package io.github.aratakileo.greenhouses.recipe;
 
 
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;

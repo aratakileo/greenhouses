@@ -1,12 +1,9 @@
-package io.github.aratakileo.greenhouses.recipe.greenhouse;
+package io.github.aratakileo.greenhouses.recipe;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.aratakileo.greenhouses.recipe.ItemRange;
-import io.github.aratakileo.greenhouses.recipe.MultyOutputRecipe;
-import io.github.aratakileo.greenhouses.recipe.RecipeSerializers;
-import io.github.aratakileo.greenhouses.recipe.RecipeTypes;
+import io.github.aratakileo.greenhouses.item.ItemRange;
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;

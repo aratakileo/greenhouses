@@ -2,9 +2,9 @@ package io.github.aratakileo.greenhouses.block.entity;
 
 import io.github.aratakileo.greenhouses.block.Blocks;
 import io.github.aratakileo.greenhouses.container.GreenhouseScreenContainer;
-import io.github.aratakileo.greenhouses.recipe.greenhouse.GreenhouseRecipe;
+import io.github.aratakileo.greenhouses.recipe.GreenhouseRecipe;
 import io.github.aratakileo.greenhouses.recipe.RecipeTypes;
-import io.github.aratakileo.greenhouses.recipe.greenhouse.GreenhouseRecipeInput;
+import io.github.aratakileo.greenhouses.recipe.GreenhouseRecipeInput;
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
