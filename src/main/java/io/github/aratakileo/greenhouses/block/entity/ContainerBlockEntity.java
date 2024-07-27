@@ -27,6 +27,9 @@ import java.lang.reflect.Field;
 
 public abstract class ContainerBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer {
     protected final Block block;
+
+    protected final int firstInputSlots;
+
     protected NonNullList<ItemStack> items;
 
     protected ContainerBlockEntity(
@@ -34,11 +37,13 @@ public abstract class ContainerBlockEntity extends BaseContainerBlockEntity impl
             @NotNull BlockPos blockPos,
             @NotNull BlockState blockState,
             @NotNull Block block,
-            int slotsCount
+            int slots,
+            int firstInputSlots
     ) {
         super(blockEntityType, blockPos, blockState);
         this.block = block;
-        this.items = NonNullList.withSize(slotsCount, ItemStack.EMPTY);
+        this.items = NonNullList.withSize(slots, ItemStack.EMPTY);
+        this.firstInputSlots = firstInputSlots;
     }
 
     @Override
@@ -64,6 +69,7 @@ public abstract class ContainerBlockEntity extends BaseContainerBlockEntity impl
     @Override
     public int @NotNull[] getSlotsForFace(@NotNull Direction direction) {
         int[] result = new int[items.size()];
+
         for (int i = 0; i < result.length; i++) {
             result[i] = i;
         }
@@ -72,13 +78,13 @@ public abstract class ContainerBlockEntity extends BaseContainerBlockEntity impl
     }
 
     @Override
-    public boolean canPlaceItemThroughFace(int i, @NotNull ItemStack itemStack, @Nullable Direction direction) {
-        return true;
+    public boolean canPlaceItemThroughFace(int slotIndex, @NotNull ItemStack itemStack, @Nullable Direction direction) {
+        return slotIndex < firstInputSlots;
     }
 
     @Override
-    public boolean canTakeItemThroughFace(int i, @NotNull ItemStack itemStack, @NotNull Direction direction) {
-        return true;
+    public boolean canTakeItemThroughFace(int slotIndex, @NotNull ItemStack itemStack, @NotNull Direction direction) {
+        return slotIndex >= firstInputSlots;
     }
 
     @Override

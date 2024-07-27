@@ -10,6 +10,7 @@ import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class GroundSlot extends GreenhouseInputSlot {
     public GroundSlot(@NotNull Container container, int index, int xPos, int yPos) {
@@ -33,12 +34,11 @@ public class GroundSlot extends GreenhouseInputSlot {
     }
 
     public boolean shouldPrepareBeforePickup() {
-        return getItem().is(Items.FARMLAND);
+        return shouldPrepareBeforePickup(getItem());
     }
 
     public void prepareBeforePickup() {
-        set(new ItemStack(Items.DIRT, getItem().getCount()));
-        SoundUtil.playGuiSound(SoundEvents.HOE_TILL);
+        prepareBeforePickup(getItem(), this::set);
     }
 
     @Override
@@ -59,5 +59,14 @@ public class GroundSlot extends GreenhouseInputSlot {
         }
 
         return insertableStack;
+    }
+
+    public static boolean shouldPrepareBeforePickup(@NotNull ItemStack itemStack) {
+        return itemStack.is(Items.FARMLAND);
+    }
+
+    public static void prepareBeforePickup(@NotNull ItemStack itemStack, @NotNull Consumer<@NotNull ItemStack> setter) {
+        setter.accept(new ItemStack(Items.DIRT, itemStack.getCount()));
+        SoundUtil.playGuiSound(SoundEvents.HOE_TILL);
     }
 }

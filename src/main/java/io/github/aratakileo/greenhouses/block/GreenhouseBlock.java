@@ -3,6 +3,7 @@ package io.github.aratakileo.greenhouses.block;
 import com.mojang.serialization.MapCodec;
 import io.github.aratakileo.greenhouses.block.entity.BlockEntities;
 import io.github.aratakileo.greenhouses.block.entity.GreenhouseBlockEntity;
+import io.github.aratakileo.greenhouses.container.slot.GroundSlot;
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
@@ -68,6 +69,16 @@ public class GreenhouseBlock extends EntityBlock {
     protected void onRemove(@NotNull BlockState oldState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull BlockState newState, boolean moved) {
         if (level.getBlockEntity(blockPos) instanceof GreenhouseBlockEntity blockEntity && blockEntity.isGroundWet())
             level.setBlock(blockPos, Blocks.WATER.defaultBlockState(), 2);
+
+        if (level.getBlockEntity(blockPos) instanceof GreenhouseBlockEntity blockEntity) {
+            final var itemStack = blockEntity.getItem(GreenhouseUtil.GROUND_INPUT_SLOT);
+
+            if (GroundSlot.shouldPrepareBeforePickup(itemStack))
+                GroundSlot.prepareBeforePickup(
+                        itemStack,
+                        item -> blockEntity.setItem(GreenhouseUtil.GROUND_INPUT_SLOT, item)
+                );
+        }
 
         super.onRemove(oldState, level, blockPos, newState, moved);
     }

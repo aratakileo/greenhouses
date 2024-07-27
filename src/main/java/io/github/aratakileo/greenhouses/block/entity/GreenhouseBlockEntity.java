@@ -7,6 +7,7 @@ import io.github.aratakileo.greenhouses.recipe.RecipeTypes;
 import io.github.aratakileo.greenhouses.recipe.greenhouse.GreenhouseRecipeInput;
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
@@ -15,6 +16,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,14 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
     protected int failCode = GreenhouseUtil.NO_FAILS_CODE;
 
     public GreenhouseBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
-        super(BlockEntities.GREENHOUSE_BLOCK_ENTITY_TYPE, blockPos, blockState, Blocks.GREENHOUSE, 6);
+        super(
+                BlockEntities.GREENHOUSE_BLOCK_ENTITY_TYPE,
+                blockPos,
+                blockState,
+                Blocks.GREENHOUSE,
+                GreenhouseUtil.TOTAL_SLOTS,
+                GreenhouseUtil.INPUT_SLOTS
+        );
 
         data = new ContainerData() {
             @Override
@@ -176,6 +185,11 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
         return getItems().stream().skip(GreenhouseUtil.INPUT_SLOTS).toList();
     }
 
+    @Override
+    public boolean canPlaceItemThroughFace(int slotIndex, @NotNull ItemStack itemStack, @Nullable Direction direction) {
+        return false;
+    }
+
     private boolean canInsertItemIntoOutputStacks() {
         int slotsScore = 0;
 
@@ -222,5 +236,10 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
         }
 
         return slotsScore >= itemStacks.size();
+    }
+
+    @Override
+    public boolean canTakeItemThroughFace(int slotIndex, @NotNull ItemStack itemStack, @NotNull Direction direction) {
+        return super.canTakeItemThroughFace(slotIndex, itemStack, direction);
     }
 }
