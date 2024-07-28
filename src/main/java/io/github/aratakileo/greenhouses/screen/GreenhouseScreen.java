@@ -77,7 +77,7 @@ public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseScreenCo
                 ICON_SIZE,
                 (int)(menu.getProgress() * ICON_SIZE)
         );
-        
+
         else if (menu.isInvalidRecipe())
             guiGraphics.blit(
                     TEXTURE,
