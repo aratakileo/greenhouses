@@ -1,9 +1,7 @@
 package io.github.aratakileo.greenhouses.container;
 
 import io.github.aratakileo.greenhouses.block.entity.GreenhouseBlockEntity;
-import io.github.aratakileo.greenhouses.container.slot.GroundSlot;
-import io.github.aratakileo.greenhouses.container.slot.PlantSlot;
-import io.github.aratakileo.greenhouses.container.slot.AddWaterSlot;
+import io.github.aratakileo.greenhouses.container.slot.*;
 import io.github.aratakileo.greenhouses.container.slot.ResultSlot;
 import io.github.aratakileo.greenhouses.screen.ScreenMenus;
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
@@ -13,9 +11,11 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 public class GreenhouseScreenContainer extends AbstractContainerMenu {
+
     private final Container container;
     private final GreenhouseBlockEntity.GreenhouseContainerData data;
 
@@ -45,8 +45,15 @@ public class GreenhouseScreenContainer extends AbstractContainerMenu {
 
         addSlot(new GroundSlot(container, GreenhouseUtil.GROUND_INPUT_SLOT, 70, 45));
 
-        addSlot(new AddWaterSlot(
-                this,
+        final var FLUID_SLOT_CONTROLLER = new FluidSlotController.Builder(
+                Items.WATER_BUCKET
+        ).setMayTakeFluid(this::isGroundWet)
+                .setOnTakeFluid(() -> data.isGroundWet = false)
+                .setOnInsertFluid(() -> data.isGroundWet = true)
+                .build();
+
+        addSlot(new FluidSlot(
+                FLUID_SLOT_CONTROLLER,
                 container,
                 GreenhouseUtil.WATER_INPUT_SLOT,
                 50,
@@ -133,9 +140,6 @@ public class GreenhouseScreenContainer extends AbstractContainerMenu {
 
     public boolean isGroundWet() {
         return data.isGroundWet;
-    }
-    public void setGroundWet(boolean isWet) {
-        data.isGroundWet = isWet;
     }
 
     public boolean isGrowing() {

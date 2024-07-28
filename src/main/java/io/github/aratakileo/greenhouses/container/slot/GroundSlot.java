@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class GroundSlot extends GreenhouseInputSlot {
+public class GroundSlot extends SingleItemSlot {
     public GroundSlot(@NotNull Container container, int index, int xPos, int yPos) {
         super(container, index, xPos, yPos);
     }

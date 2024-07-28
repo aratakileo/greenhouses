@@ -4,8 +4,8 @@ import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import org.jetbrains.annotations.NotNull;
 
-public class GreenhouseInputSlot extends Slot {
-    public GreenhouseInputSlot(@NotNull Container container, int index, int xPos, int yPos) {
+public class SingleItemSlot extends Slot {
+    public SingleItemSlot(@NotNull Container container, int index, int xPos, int yPos) {
         super(container, index, xPos, yPos);
     }
 
