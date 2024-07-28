@@ -68,7 +68,7 @@ public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseScreenCo
     }
 
     private void renderGrowingProgress(@NotNull GuiGraphics guiGraphics, int x, int y) {
-        if (menu.isGrowing()) guiGraphics.blit(
+        if (menu.getProgress() > 0) guiGraphics.blit(
                 TEXTURE,
                 x + PROGRESS_X_OFFSET,
                 y + PROGRESS_Y_OFFSET + ICON_SIZE - (int)(menu.getProgress() * ICON_SIZE),
@@ -77,6 +77,7 @@ public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseScreenCo
                 ICON_SIZE,
                 (int)(menu.getProgress() * ICON_SIZE)
         );
+        
         else if (menu.isInvalidRecipe())
             guiGraphics.blit(
                     TEXTURE,

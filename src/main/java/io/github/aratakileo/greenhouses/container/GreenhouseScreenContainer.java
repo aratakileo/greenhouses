@@ -142,10 +142,6 @@ public class GreenhouseScreenContainer extends AbstractContainerMenu {
         return data.isGroundWet;
     }
 
-    public boolean isGrowing() {
-        return data.progress > 0;
-    }
-
     public float getProgress() {
         return (float) data.progress / (float) data.maxProgress;
     }
