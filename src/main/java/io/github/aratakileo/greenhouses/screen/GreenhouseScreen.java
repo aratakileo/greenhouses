@@ -33,18 +33,14 @@ public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseContaine
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         super.render(guiGraphics, mouseX, mouseY, delta);
-        renderTooltip(guiGraphics, mouseX, mouseY);
+        renderForeground(guiGraphics, mouseX, mouseY, delta);
     }
 
-    @Override
-    protected void renderBg(@NotNull GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
+    protected void renderForeground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        renderTooltip(guiGraphics, mouseX, mouseY);
+
         final var bgX = (width - imageWidth) / 2;
         final var bgY = (height - imageHeight) / 2;
-
-        guiGraphics.blit(TEXTURE, bgX, bgY, 0, 0, imageWidth, imageHeight);
-        renderGrowingProgress(guiGraphics, bgX, bgY);
-        renderWetState(guiGraphics, bgX, bgY);
-        renderSlotIcons(guiGraphics, bgX, bgY);
 
         if (PROGRESS_OFFSET_RECT.contains(mouseX - bgX, mouseY - bgY))
             guiGraphics.renderTooltip(
@@ -58,6 +54,17 @@ public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseContaine
                     mouseX,
                     mouseY
             );
+    }
+
+    @Override
+    protected void renderBg(@NotNull GuiGraphics guiGraphics, float delta, int mouseX, int mouseY) {
+        final var bgX = (width - imageWidth) / 2;
+        final var bgY = (height - imageHeight) / 2;
+
+        guiGraphics.blit(TEXTURE, bgX, bgY, 0, 0, imageWidth, imageHeight);
+        renderGrowingProgress(guiGraphics, bgX, bgY);
+        renderWetState(guiGraphics, bgX, bgY);
+        renderSlotIcons(guiGraphics, bgX, bgY);
     }
 
     private void renderGrowingProgress(@NotNull GuiGraphics guiGraphics, int x, int y) {
