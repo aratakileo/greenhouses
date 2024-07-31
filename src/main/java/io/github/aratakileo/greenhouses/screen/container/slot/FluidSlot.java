@@ -33,7 +33,16 @@ public class FluidSlot extends SingleItemSlot {
         if (fluidSlotController.mayTakeFluid() && insertableStack.is(fluidSlotController.getEmptyFluidContainer())) {
             SoundUtil.playGuiSound(fluidSlotController.getFluidTakeSound());
             fluidSlotController.onTakeFluid();
-            return new ItemStack(fluidSlotController.getContainerWithFluid());
+
+            final var containerItemWithFluid = new ItemStack(fluidSlotController.getContainerWithFluid());
+
+            if (insertableStack.getCount() > 1) {
+                set(containerItemWithFluid);
+                insertableStack.shrink(1);
+                return insertableStack;
+            }
+
+            return containerItemWithFluid;
         }
 
         if (fluidSlotController.mayInsertFluid() && insertableStack.is(fluidSlotController.getContainerWithFluid())) {
