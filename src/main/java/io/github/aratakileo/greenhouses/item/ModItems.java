@@ -1,7 +1,7 @@
 package io.github.aratakileo.greenhouses.item;
 
 import io.github.aratakileo.greenhouses.Greenhouses;
-import io.github.aratakileo.greenhouses.util.FuelController;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BucketItem;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public final class Items {
+public final class ModItems {
     public final static ArrayList<Item> ITEMS = new ArrayList<>();
 
     public final static Item CREOSOTE_BUCKET = createItem(
@@ -42,6 +42,6 @@ public final class Items {
     }
 
     public static void init() {
-        FuelController.addFuel(COKED_COAL, 3200);
+        FuelRegistry.INSTANCE.add(COKED_COAL, 3200);
     }
 }

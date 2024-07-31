@@ -1,7 +1,7 @@
 {
   "type": "greenhouses:greenhouse_growing",
-  "growth_rate": 1000,
-  "needs_wet_ground": true,
+  "duration": 1000,
+  "needs_water": true,
   "plant": {
     "item": "minecraft:wheat_seeds"
   },

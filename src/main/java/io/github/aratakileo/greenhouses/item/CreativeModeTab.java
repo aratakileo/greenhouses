@@ -1,7 +1,7 @@
 package io.github.aratakileo.greenhouses.item;
 
 import io.github.aratakileo.greenhouses.Greenhouses;
-import io.github.aratakileo.greenhouses.block.Blocks;
+import io.github.aratakileo.greenhouses.block.ModBlocks;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.core.Registry;
@@ -15,13 +15,13 @@ public final class CreativeModeTab {
     private final static ResourceLocation MOD_TAB_RESOURCE_LOCATION = Greenhouses.NAMESPACE.getIdentifier("item_group");
     public final static ResourceKey<net.minecraft.world.item.CreativeModeTab> MOD_TAB_RESOURCE_KEY = ResourceKey.create(BuiltInRegistries.CREATIVE_MODE_TAB.key(), MOD_TAB_RESOURCE_LOCATION);
     public final static net.minecraft.world.item.CreativeModeTab MOD_TAB = FabricItemGroup.builder()
-            .icon(() -> new ItemStack(Blocks.GREENHOUSE))
+            .icon(() -> new ItemStack(ModBlocks.GREENHOUSE))
             .title(Component.literal("Greenhouses"))
             .build();
 
     public static void init() {
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, MOD_TAB_RESOURCE_KEY, MOD_TAB);
 
-        ItemGroupEvents.modifyEntriesEvent(MOD_TAB_RESOURCE_KEY).register(tab -> Items.ITEMS.forEach(tab::accept));
+        ItemGroupEvents.modifyEntriesEvent(MOD_TAB_RESOURCE_KEY).register(tab -> ModItems.ITEMS.forEach(tab::accept));
     }
 }

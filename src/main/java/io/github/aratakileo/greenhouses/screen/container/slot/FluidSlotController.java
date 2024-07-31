@@ -1,4 +1,4 @@
-package io.github.aratakileo.greenhouses.container.slot;
+package io.github.aratakileo.greenhouses.screen.container.slot;
 
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -35,7 +35,7 @@ public interface FluidSlotController {
     class Builder {
         private @NotNull Item containerWithFluid;
         private @Nullable Item emptyFluidContainer;
-        private @NotNull Supplier<Boolean> mayInsertFluid;
+        private @Nullable Supplier<Boolean> mayInsertFluid;
         private @Nullable Supplier<Boolean> mayTakeFluid;
         private @Nullable SoundEvent fluidInsertSound;
         private @Nullable SoundEvent fluidTakeSound;
@@ -100,12 +100,12 @@ public interface FluidSlotController {
 
                 @Override
                 public boolean mayInsertFluid() {
-                    return mayInsertFluid.get();
+                    return mayInsertFluid == null ? !mayTakeFluid() : mayInsertFluid.get();
                 }
 
                 @Override
                 public boolean mayTakeFluid() {
-                    return mayTakeFluid == null ? FluidSlotController.super.mayTakeFluid() : mayInsertFluid.get();
+                    return mayTakeFluid == null ? FluidSlotController.super.mayTakeFluid() : mayTakeFluid.get();
                 }
 
                 @Override

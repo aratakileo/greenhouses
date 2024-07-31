@@ -9,23 +9,24 @@ import org.jetbrains.annotations.NotNull;
 
 public final class RecipeTypes {
     public final static RecipeType<GreenhouseRecipe> GREENHOUSE_RECIPE_TYPE = createRecipeType(
-            "greenhouse_growing",
-            new RecipeType<>() {
-                @Override
-                public String toString() {
-                    return "greenhouse_growing";
-                }
-            }
+            "greenhouse_growing"
+    );
+    public final static RecipeType<CokeFurnaceRecipe> COKE_FURNACE_RECIPE_TYPE = createRecipeType(
+            "coking"
     );
 
     private static <T extends Recipe<?>> RecipeType<T> createRecipeType(
-            @NotNull String name,
-            @NotNull RecipeType<T> recipeType
+            @NotNull String name
     ) {
         return Registry.register(
                 BuiltInRegistries.RECIPE_TYPE,
                 Greenhouses.NAMESPACE.getIdentifier(name),
-                recipeType
+                new RecipeType<T>() {
+                    @Override
+                    public String toString() {
+                        return name;
+                    }
+                }
         );
     }
 

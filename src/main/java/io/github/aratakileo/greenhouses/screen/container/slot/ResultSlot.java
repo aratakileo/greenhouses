@@ -1,4 +1,4 @@
-package io.github.aratakileo.greenhouses.container.slot;
+package io.github.aratakileo.greenhouses.screen.container.slot;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;

@@ -1,0 +1,12 @@
+{
+  "type": "greenhouses:coking",
+  "duration": 900,
+  "produced_creosote": 250,
+  "ingredient": {
+    "tag": "minecraft:logs"
+  },
+  "result": {
+    "id": "minecraft:charcoal",
+    "count": 2
+  }
+}

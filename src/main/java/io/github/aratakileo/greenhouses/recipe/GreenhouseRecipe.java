@@ -21,21 +21,21 @@ public class GreenhouseRecipe extends MultyOutputRecipe<GreenhouseRecipeInput> {
     protected final Ingredient plant;
     protected final Ingredient ground;
     protected final List<ItemRange> result;
-    protected final boolean needsWetGround;
-    protected final int growthRate;
+    protected final boolean needsWater;
+    protected final int duration;
 
     public GreenhouseRecipe(
             @NotNull Ingredient plant,
             @NotNull Ingredient ground,
             @NotNull List<ItemRange> result,
-            boolean needsWetGround,
-            int growthRate
+            boolean needsWater,
+            int duration
     ) {
         this.plant = plant;
         this.ground = ground;
         this.result = result;
-        this.needsWetGround = needsWetGround;
-        this.growthRate = growthRate;
+        this.needsWater = needsWater;
+        this.duration = duration;
     }
 
     private static boolean match(@NotNull Ingredient ingredient, @NotNull ItemStack inputStack) {
@@ -51,7 +51,7 @@ public class GreenhouseRecipe extends MultyOutputRecipe<GreenhouseRecipeInput> {
     public boolean matches(@NotNull GreenhouseRecipeInput recipeInput, @NotNull Level level) {
         return !plant.isEmpty()
                 && !ground.isEmpty()
-                && recipeInput.isGroundWet() == needsWetGround()
+                && recipeInput.isGroundWet() == needsWater()
                 && match(plant, recipeInput.plantInput())
                 && match(ground, recipeInput.groundInput());
     }
@@ -71,12 +71,12 @@ public class GreenhouseRecipe extends MultyOutputRecipe<GreenhouseRecipeInput> {
         return RecipeTypes.GREENHOUSE_RECIPE_TYPE;
     }
 
-    public boolean needsWetGround() {
-        return needsWetGround;
+    public boolean needsWater() {
+        return needsWater;
     }
 
-    public int getGrowthRate() {
-        return growthRate;
+    public int getDuration() {
+        return duration;
     }
 
     public @NotNull Ingredient getPlant() {
@@ -89,19 +89,19 @@ public class GreenhouseRecipe extends MultyOutputRecipe<GreenhouseRecipeInput> {
 
     public static class Serializer implements RecipeSerializer<GreenhouseRecipe> {
         private static final MapCodec<GreenhouseRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
-                Ingredient.CODEC.fieldOf("plant").forGetter(GreenhouseRecipe::getPlant),
-                Ingredient.CODEC.fieldOf("ground").forGetter(GreenhouseRecipe::getGround),
+                Ingredient.CODEC_NONEMPTY.fieldOf("plant").forGetter(GreenhouseRecipe::getPlant),
+                Ingredient.CODEC_NONEMPTY.fieldOf("ground").forGetter(GreenhouseRecipe::getGround),
                 ItemRange.getListCodec(1, GreenhouseUtil.OUTPUT_SLOTS)
                         .fieldOf("result")
                         .forGetter(recipe -> recipe.result),
                 Codec.BOOL.optionalFieldOf(
-                        "needs_wet_ground",
+                        "needs_water",
                         false
-                ).forGetter(GreenhouseRecipe::needsWetGround),
+                ).forGetter(GreenhouseRecipe::needsWater),
                 Codec.INT.optionalFieldOf(
-                        "growth_rate",
+                        "duration",
                         GreenhouseUtil.RECIPE_DEFAULT_GROWTH_RATE
-                ).forGetter(GreenhouseRecipe::getGrowthRate)
+                ).forGetter(GreenhouseRecipe::getDuration)
         ).apply(builder, GreenhouseRecipe::new));
 
         private static final StreamCodec<RegistryFriendlyByteBuf, GreenhouseRecipe> STREAM_CODEC = new StreamCodec<>() {
@@ -121,8 +121,8 @@ public class GreenhouseRecipe extends MultyOutputRecipe<GreenhouseRecipeInput> {
                 Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.plant);
                 Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.ground);
                 ItemRange.LIST_STREAM_CODEC.encode(buffer, recipe.result);
-                buffer.writeBoolean(recipe.needsWetGround);
-                buffer.writeInt(recipe.growthRate);
+                buffer.writeBoolean(recipe.needsWater);
+                buffer.writeInt(recipe.duration);
             }
         };
 

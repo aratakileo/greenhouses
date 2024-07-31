@@ -1,7 +1,8 @@
-package io.github.aratakileo.greenhouses.screen;
+package io.github.aratakileo.greenhouses.screen.container;
 
 import io.github.aratakileo.greenhouses.Greenhouses;
-import io.github.aratakileo.greenhouses.container.GreenhouseScreenContainer;
+import io.github.aratakileo.greenhouses.screen.CokeFurnaceScreen;
+import io.github.aratakileo.greenhouses.screen.GreenhouseScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -12,11 +13,16 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import org.jetbrains.annotations.NotNull;
 
-public final class ScreenMenus {
-    public static final MenuType<GreenhouseScreenContainer> GREENHOUSE_SCREEN_MENU = create(
+public final class ContainerMenus {
+    public static final MenuType<GreenhouseContainerMenu> GREENHOUSE_CONTAINER_MENU = create(
             "greenhouse_menu",
-            GreenhouseScreenContainer::new,
+            GreenhouseContainerMenu::new,
             GreenhouseScreen::new
+    );
+    public static final MenuType<CokeFurnaceContainerMenu> COKE_FURNACE_CONTAINER_MENU = create(
+            "coke_furnace_menu",
+            CokeFurnaceContainerMenu::new,
+            CokeFurnaceScreen::new
     );
 
     private static <T extends AbstractContainerMenu, S extends Screen & MenuAccess<T>> MenuType<T> create(

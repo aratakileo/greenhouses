@@ -1,7 +1,7 @@
 package io.github.aratakileo.greenhouses.block;
 
 import io.github.aratakileo.greenhouses.Greenhouses;
-import io.github.aratakileo.greenhouses.item.Items;
+import io.github.aratakileo.greenhouses.item.ModItems;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Registry;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public final class Blocks {
+public final class ModBlocks {
     public static final ArrayList<Block> BLOCKS = new ArrayList<>();
 
     public static final BlockSetType TREATED_BLOCK_SET_TYPE = new BlockSetType("treated");
@@ -46,7 +46,7 @@ public final class Blocks {
             "coke_brick_wall"
     );
     public static final Block COKE_FURNACE = createBlock(
-            new FurnaceBlock(net.minecraft.world.level.block.Blocks.DEEPSLATE_BRICKS.properties()),
+            new CokeFurnaceBlock(net.minecraft.world.level.block.Blocks.DEEPSLATE_BRICKS.properties()),
             "coke_furnace"
     );
 
@@ -125,7 +125,7 @@ public final class Blocks {
 
         if (translucent) BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.translucent());
 
-        Items.ITEMS.add(item);
+        ModItems.ITEMS.add(item);
         BLOCKS.add(block);
         Greenhouses.LOGGER.info("Register block: {}", resourceLocation);
 

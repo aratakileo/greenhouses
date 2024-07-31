@@ -1,0 +1,11 @@
+{
+  "type": "greenhouses:coking",
+  "duration": 1800,
+  "produced_creosote": 500,
+  "ingredient": {
+    "item": "minecraft:coal"
+  },
+  "result": {
+    "id": "greenhouses:coked_coal"
+  }
+}

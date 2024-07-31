@@ -1,4 +1,4 @@
-package io.github.aratakileo.greenhouses.container.slot;
+package io.github.aratakileo.greenhouses.screen.container.slot;
 
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import io.github.aratakileo.greenhouses.util.SoundUtil;

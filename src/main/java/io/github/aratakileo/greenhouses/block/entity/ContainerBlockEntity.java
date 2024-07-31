@@ -29,8 +29,6 @@ import java.lang.reflect.Field;
 public abstract class ContainerBlockEntity extends BaseContainerBlockEntity implements WorldlyContainer {
     protected final Block block;
 
-    protected final int firstInputSlots;
-
     protected NonNullList<ItemStack> items;
 
     protected ContainerBlockEntity(
@@ -38,13 +36,11 @@ public abstract class ContainerBlockEntity extends BaseContainerBlockEntity impl
             @NotNull BlockPos blockPos,
             @NotNull BlockState blockState,
             @NotNull Block block,
-            int slots,
-            int firstInputSlots
+            int slots
     ) {
         super(blockEntityType, blockPos, blockState);
         this.block = block;
         this.items = NonNullList.withSize(slots, ItemStack.EMPTY);
-        this.firstInputSlots = firstInputSlots;
     }
 
     @Override
@@ -65,27 +61,6 @@ public abstract class ContainerBlockEntity extends BaseContainerBlockEntity impl
     @Override
     public int getContainerSize() {
         return items.size();
-    }
-
-    @Override
-    public int @NotNull[] getSlotsForFace(@NotNull Direction direction) {
-        int[] result = new int[items.size()];
-
-        for (int i = 0; i < result.length; i++) {
-            result[i] = i;
-        }
-
-        return result;
-    }
-
-    @Override
-    public boolean canPlaceItemThroughFace(int slotIndex, @NotNull ItemStack itemStack, @Nullable Direction direction) {
-        return slotIndex < firstInputSlots;
-    }
-
-    @Override
-    public boolean canTakeItemThroughFace(int slotIndex, @NotNull ItemStack itemStack, @NotNull Direction direction) {
-        return slotIndex >= firstInputSlots;
     }
 
     @Override
@@ -111,7 +86,7 @@ public abstract class ContainerBlockEntity extends BaseContainerBlockEntity impl
         if (hasUnsupportedType(field))
             throw new RuntimeException("Compound data field `%s` has unsupported type `%s`".formatted(
                     Classes.getFieldView(field),
-                    field.getType()
+                    field.getType().getName()
             ));
 
         final var attributeName = getCompoundAttributeName(field, prefix);
@@ -151,7 +126,7 @@ public abstract class ContainerBlockEntity extends BaseContainerBlockEntity impl
         if (hasUnsupportedType(field))
             throw new RuntimeException("Compound data field `%s` has unsupported type `%s`".formatted(
                     Classes.getFieldView(field),
-                    field.getType()
+                    field.getType().getName()
             ));
 
         final var attributeName = getCompoundAttributeName(field, prefix);
@@ -182,6 +157,25 @@ public abstract class ContainerBlockEntity extends BaseContainerBlockEntity impl
                 && field.getType() != int.class
                 && !ContainerAutoData.class.isAssignableFrom(field.getType());
     }
+
+
+
+    @Override
+    public abstract int @NotNull[] getSlotsForFace(@NotNull Direction direction);
+
+    @Override
+    public abstract boolean canTakeItemThroughFace(
+            int slotIndex,
+            @NotNull ItemStack itemStack,
+            @NotNull Direction direction
+    );
+
+    @Override
+    public abstract boolean canPlaceItemThroughFace(
+            int slotIndex,
+            @NotNull ItemStack itemStack,
+            @Nullable Direction direction
+    );
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)

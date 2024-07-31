@@ -19,7 +19,7 @@ public abstract class ContainerAutoData implements ContainerData {
             if (hasUnsupportedType(field))
                 throw new RuntimeException("Compound data field `%s` has unsupported type `%s`".formatted(
                         Classes.getFieldView(field),
-                        field.getType()
+                        field.getType().getName()
                 ));
 
             if (field.isAnnotationPresent(DataField.class))

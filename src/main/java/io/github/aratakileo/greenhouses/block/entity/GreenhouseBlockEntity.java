@@ -1,8 +1,7 @@
 package io.github.aratakileo.greenhouses.block.entity;
 
-import io.github.aratakileo.greenhouses.ContainerAutoData;
-import io.github.aratakileo.greenhouses.block.Blocks;
-import io.github.aratakileo.greenhouses.container.GreenhouseScreenContainer;
+import io.github.aratakileo.greenhouses.block.ModBlocks;
+import io.github.aratakileo.greenhouses.screen.container.GreenhouseContainerMenu;
 import io.github.aratakileo.greenhouses.recipe.GreenhouseRecipe;
 import io.github.aratakileo.greenhouses.recipe.RecipeTypes;
 import io.github.aratakileo.greenhouses.recipe.GreenhouseRecipeInput;
@@ -25,22 +24,21 @@ import java.util.Optional;
 
 public class GreenhouseBlockEntity extends ContainerBlockEntity {
     @CompoundDataField
-    private final GreenhouseContainerData data = new GreenhouseContainerData();
+    private final GreenhouseUtil.GreenhouseContainerData data = new GreenhouseUtil.GreenhouseContainerData();
 
     public GreenhouseBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         super(
-                BlockEntities.GREENHOUSE_BLOCK_ENTITY_TYPE,
+                BlockEntitiTypes.GREENHOUSE_BLOCK_ENTITY_TYPE,
                 blockPos,
                 blockState,
-                Blocks.GREENHOUSE,
-                GreenhouseUtil.TOTAL_SLOTS,
-                GreenhouseUtil.INPUT_SLOTS
+                ModBlocks.GREENHOUSE,
+                GreenhouseUtil.TOTAL_SLOTS
         );
     }
 
     @Override
     protected @NotNull AbstractContainerMenu createMenu(int syncId, @NotNull Inventory inventory) {
-        return new GreenhouseScreenContainer(syncId, inventory, this, data);
+        return new GreenhouseContainerMenu(inventory, this, data, syncId);
     }
 
     public void tick(@NotNull Level lvl, @NotNull BlockPos blockPos, @NotNull BlockState blockState) {
@@ -49,14 +47,14 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
         if (!canInsertItemIntoOutputStacks()) {
             data.progress = 0;
             data.failCode = GreenhouseUtil.NOT_ENOUGH_OUTPUT_SPACE_CODE;
-            setChanged(lvl, blockPos, blockState);
+            setChanged();
             return;
         }
 
         if (getGroundInputStack().isEmpty() || getPlantInputStack().isEmpty()) {
             data.progress = 0;
             data.failCode = GreenhouseUtil.NO_FAILS_CODE;
-            setChanged(lvl, blockPos, blockState);
+            setChanged();
             return;
         }
 
@@ -64,14 +62,14 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
 
         if (recipeOptional.isEmpty()) {
             data.progress = 0;
-            setChanged(lvl, blockPos, blockState);
+            setChanged();
 
             if (getCurrentRecipe(true).isEmpty()) {
                 data.failCode = GreenhouseUtil.INVALID_RECIPE_CODE;
                 return;
             }
 
-            data.failCode = isGroundWet() ? GreenhouseUtil.DOES_NOT_NEED_WATER_CODE : GreenhouseUtil.NEEDS_WATER_CODE;
+            data.failCode = hasWater() ? GreenhouseUtil.DOES_NOT_NEED_WATER_CODE : GreenhouseUtil.NEEDS_WATER_CODE;
             return;
         }
 
@@ -80,15 +78,15 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
         if (!canInsertItemIntoOutputStacks(recipe.value().getResultItems())) {
             data.progress = 0;
             data.failCode = GreenhouseUtil.NOT_ENOUGH_OUTPUT_SPACE_CODE;
-            setChanged(lvl, blockPos, blockState);
+            setChanged();
             return;
         }
 
         data.progress++;
-        data.maxProgress = recipeOptional.orElseThrow().value().getGrowthRate();
+        data.maxProgress = recipeOptional.orElseThrow().value().getDuration();
         data.failCode = GreenhouseUtil.NO_FAILS_CODE;
 
-        setChanged(lvl, blockPos, blockState);
+        setChanged();
 
         if (data.progress > data.maxProgress) {
             addToOutputStacks(recipeOptional.orElseThrow().value().getResultItems());
@@ -96,17 +94,17 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
         }
     }
 
-    public boolean isGroundWet() {
-        return data.isGroundWet;
+    public boolean hasWater() {
+        return data.hasWater;
     }
 
-    private @NotNull Optional<RecipeHolder<GreenhouseRecipe>> getCurrentRecipe(boolean invertWet) {
+    private @NotNull Optional<RecipeHolder<GreenhouseRecipe>> getCurrentRecipe(boolean invertWaterAvailability) {
         return Objects.requireNonNull(getLevel()).getRecipeManager().getRecipeFor(
                 RecipeTypes.GREENHOUSE_RECIPE_TYPE,
                 new GreenhouseRecipeInput(
                         getPlantInputStack(),
                         getGroundInputStack(),
-                        invertWet != isGroundWet()
+                        invertWaterAvailability != hasWater()
                 ),
                 getLevel()
         );
@@ -147,11 +145,6 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
 
     private @NotNull List<@NotNull ItemStack> getOutputStacks() {
         return getItems().stream().skip(GreenhouseUtil.INPUT_SLOTS).toList();
-    }
-
-    @Override
-    public boolean canPlaceItemThroughFace(int slotIndex, @NotNull ItemStack itemStack, @Nullable Direction direction) {
-        return false;
     }
 
     private boolean canInsertItemIntoOutputStacks() {
@@ -203,21 +196,26 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
     }
 
     @Override
-    public boolean canTakeItemThroughFace(int slotIndex, @NotNull ItemStack itemStack, @NotNull Direction direction) {
-        return super.canTakeItemThroughFace(slotIndex, itemStack, direction);
+    public int @NotNull[] getSlotsForFace(@NotNull Direction direction) {
+        if (direction == Direction.DOWN) {
+            final var slots = new int[GreenhouseUtil.OUTPUT_SLOTS];
+
+            for (var i = 0; i < GreenhouseUtil.OUTPUT_SLOTS; i++)
+                slots[i] = i + GreenhouseUtil.INPUT_SLOTS;
+
+            return slots;
+        }
+
+        return new int[0];
     }
 
-    public static final class GreenhouseContainerData extends ContainerAutoData {
-        @DataField
-        public int progress = 0;
+    @Override
+    public boolean canTakeItemThroughFace(int slotIndex, @NotNull ItemStack itemStack, @NotNull Direction direction) {
+        return true;
+    }
 
-        @DataField
-        public int maxProgress = 1;
-
-        @DataField
-        public boolean isGroundWet = false;
-
-        @DataField
-        public int failCode = GreenhouseUtil.NO_FAILS_CODE;
+    @Override
+    public boolean canPlaceItemThroughFace(int slotIndex, @NotNull ItemStack itemStack, @Nullable Direction direction) {
+        return false;
     }
 }

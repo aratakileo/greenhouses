@@ -1,9 +1,9 @@
 package io.github.aratakileo.greenhouses.block;
 
 import com.mojang.serialization.MapCodec;
-import io.github.aratakileo.greenhouses.block.entity.BlockEntities;
+import io.github.aratakileo.greenhouses.block.entity.BlockEntitiTypes;
 import io.github.aratakileo.greenhouses.block.entity.GreenhouseBlockEntity;
-import io.github.aratakileo.greenhouses.container.slot.GroundSlot;
+import io.github.aratakileo.greenhouses.screen.container.slot.GroundSlot;
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
@@ -62,12 +62,17 @@ public class GreenhouseBlock extends EntityBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
         GreenhouseUtil.init(level);
-        return createTickerHelper(blockEntityType, BlockEntities.GREENHOUSE_BLOCK_ENTITY_TYPE, ((lvl, blockPos, _blockState, blockEntity) -> blockEntity.tick(lvl, blockPos, _blockState)));
+
+        return createTickerHelper(
+                blockEntityType,
+                BlockEntitiTypes.GREENHOUSE_BLOCK_ENTITY_TYPE,
+                ((lvl, blockPos, _blockState, blockEntity) -> blockEntity.tick(lvl, blockPos, _blockState))
+        );
     }
 
     @Override
     protected void onRemove(@NotNull BlockState oldState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull BlockState newState, boolean moved) {
-        if (level.getBlockEntity(blockPos) instanceof GreenhouseBlockEntity blockEntity && blockEntity.isGroundWet())
+        if (level.getBlockEntity(blockPos) instanceof GreenhouseBlockEntity blockEntity && blockEntity.hasWater())
             level.setBlock(blockPos, Blocks.WATER.defaultBlockState(), 2);
 
         if (level.getBlockEntity(blockPos) instanceof GreenhouseBlockEntity blockEntity) {

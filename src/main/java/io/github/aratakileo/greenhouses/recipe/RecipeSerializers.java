@@ -12,6 +12,10 @@ public final class RecipeSerializers {
             "greenhouse_growing",
             new GreenhouseRecipe.Serializer()
     );
+    public static final CokeFurnaceRecipe.Serializer COKE_FURNACE_SERIALIZER = createRecipeSerializer(
+            "coking",
+            new CokeFurnaceRecipe.Serializer()
+    );
 
     public static <T extends RecipeSerializer<S>, S extends Recipe<?>> T createRecipeSerializer(
             @NotNull String name,
