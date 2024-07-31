@@ -72,7 +72,7 @@ public class CokeFurnaceContainerMenu extends SimpleContainerMenu<CokeFurnaceUti
 
     @Override
     public void clicked(int slotIndex, int button, @NotNull ClickType clickType, @NotNull Player player) {
-        if (clickType != ClickType.QUICK_MOVE) {
+        if (clickType != ClickType.QUICK_MOVE || slotIndex < CokeFurnaceUtil.TOTAL_SLOTS) {
             super.clicked(slotIndex, button, clickType, player);
             return;
         }
@@ -83,7 +83,7 @@ public class CokeFurnaceContainerMenu extends SimpleContainerMenu<CokeFurnaceUti
         for (var cokeFurnaceSlotIndex = 0; cokeFurnaceSlotIndex < CokeFurnaceUtil.TOTAL_SLOTS; cokeFurnaceSlotIndex++) {
             final var currentSlot = getSlot(cokeFurnaceSlotIndex);
 
-            if (!currentSlot.mayPlace(sourceSlotItem) || slotIndex == CokeFurnaceUtil.RESULT_SLOT) continue;
+            if (!currentSlot.mayPlace(sourceSlotItem)) continue;
 
             final var remainingSlotStack = currentSlot.safeInsert(sourceSlotItem);
             sourceSlot.set(remainingSlotStack);
