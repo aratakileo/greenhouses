@@ -5,6 +5,7 @@ import io.github.aratakileo.greenhouses.block.entity.BlockEntitiTypes;
 import io.github.aratakileo.greenhouses.block.entity.CokeFurnaceBlockEntity;
 import io.github.aratakileo.greenhouses.util.CokeFurnaceUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -33,6 +34,7 @@ public class CokeFurnaceBlock extends EntityBlock {
 
     protected CokeFurnaceBlock(@NotNull Properties properties) {
         super(properties);
+        registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(LIT, false));
     }
 
     @Override
