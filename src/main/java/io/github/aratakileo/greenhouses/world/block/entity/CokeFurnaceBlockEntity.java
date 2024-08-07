@@ -1,10 +1,11 @@
-package io.github.aratakileo.greenhouses.block.entity;
+package io.github.aratakileo.greenhouses.world.block.entity;
 
-import io.github.aratakileo.greenhouses.block.CokeFurnaceBlock;
-import io.github.aratakileo.greenhouses.block.ModBlocks;
-import io.github.aratakileo.greenhouses.recipe.CokeFurnaceRecipe;
-import io.github.aratakileo.greenhouses.recipe.RecipeTypes;
-import io.github.aratakileo.greenhouses.screen.container.CokeFurnaceContainerMenu;
+import io.github.aratakileo.elegantia.world.container.AbstractContainerBlockEntity;
+import io.github.aratakileo.greenhouses.world.block.CokeFurnaceBlock;
+import io.github.aratakileo.greenhouses.world.block.ModBlocks;
+import io.github.aratakileo.greenhouses.world.recipe.CokeFurnaceRecipe;
+import io.github.aratakileo.greenhouses.world.recipe.RecipeTypes;
+import io.github.aratakileo.greenhouses.world.container.CokeFurnaceContainerMenu;
 import io.github.aratakileo.greenhouses.util.CokeFurnaceUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,13 +22,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
-public class CokeFurnaceBlockEntity extends ContainerBlockEntity {
+public class CokeFurnaceBlockEntity extends AbstractContainerBlockEntity {
     @CompoundDataField
     private final CokeFurnaceUtil.CokeFurnaceContainerData data = new CokeFurnaceUtil.CokeFurnaceContainerData();
 
     public CokeFurnaceBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         super(
-                BlockEntitiTypes.COKE_FURNACE_BLOCK_ENTITY_TYPE,
+                BlockEntityTypes.COKE_FURNACE_BLOCK_ENTITY_TYPE,
                 blockPos,
                 blockState,
                 ModBlocks.COKE_FURNACE,

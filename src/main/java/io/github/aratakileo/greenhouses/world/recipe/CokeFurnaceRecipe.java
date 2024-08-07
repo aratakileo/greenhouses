@@ -1,4 +1,4 @@
-package io.github.aratakileo.greenhouses.recipe;
+package io.github.aratakileo.greenhouses.world.recipe;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

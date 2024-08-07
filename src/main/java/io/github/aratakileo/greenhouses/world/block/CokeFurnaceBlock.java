@@ -1,8 +1,8 @@
-package io.github.aratakileo.greenhouses.block;
+package io.github.aratakileo.greenhouses.world.block;
 
 import com.mojang.serialization.MapCodec;
-import io.github.aratakileo.greenhouses.block.entity.BlockEntitiTypes;
-import io.github.aratakileo.greenhouses.block.entity.CokeFurnaceBlockEntity;
+import io.github.aratakileo.greenhouses.world.block.entity.BlockEntityTypes;
+import io.github.aratakileo.greenhouses.world.block.entity.CokeFurnaceBlockEntity;
 import io.github.aratakileo.greenhouses.util.CokeFurnaceUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -10,6 +10,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -27,7 +28,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class CokeFurnaceBlock extends EntityBlock {
+public class CokeFurnaceBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
     private final static MapCodec<CokeFurnaceBlock> CODEC = simpleCodec(CokeFurnaceBlock::new);
@@ -99,13 +100,18 @@ public class CokeFurnaceBlock extends EntityBlock {
 
         return createTickerHelper(
                 blockEntityType,
-                BlockEntitiTypes.COKE_FURNACE_BLOCK_ENTITY_TYPE,
+                BlockEntityTypes.COKE_FURNACE_BLOCK_ENTITY_TYPE,
                 ((lvl, blockPos, _blockState, blockEntity) -> blockEntity.tick(lvl, blockPos, _blockState))
         );
     }
 
     @Override
-    public void animateTick(BlockState blockState, Level level, BlockPos blockPos, RandomSource randomSource) {
+    public void animateTick(
+            @NotNull BlockState blockState,
+            @NotNull Level level,
+            @NotNull BlockPos blockPos,
+            @NotNull RandomSource randomSource
+    ) {
         if (!blockState.getValue(LIT)) return;
 
         final var x = (double) blockPos.getX() + 0.5;
@@ -116,5 +122,17 @@ public class CokeFurnaceBlock extends EntityBlock {
             level.playLocalSound(x, y, z, SoundEvents.SMOKER_SMOKE, SoundSource.BLOCKS, 1.0f, 1.0f, false);
 
         level.addParticle(ParticleTypes.SMOKE, x, y + 1.1, z, 0.0, 0.0, 0.0);
+    }
+
+    @Override
+    protected void onRemove(
+            @NotNull BlockState oldState,
+            @NotNull Level level,
+            @NotNull BlockPos blockPos,
+            @NotNull BlockState newState,
+            boolean moved
+    ) {
+        Containers.dropContentsOnDestroy(oldState, newState, level, blockPos);
+        super.onRemove(oldState, level, blockPos, newState, moved);
     }
 }

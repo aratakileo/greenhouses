@@ -1,7 +1,9 @@
 package io.github.aratakileo.greenhouses.util;
 
-import io.github.aratakileo.greenhouses.ContainerAutoData;
-import io.github.aratakileo.greenhouses.recipe.RecipeTypes;
+import io.github.aratakileo.elegantia.world.container.ContainerAutoData;
+import io.github.aratakileo.greenhouses.Greenhouses;
+import io.github.aratakileo.greenhouses.world.recipe.RecipeTypes;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -19,14 +21,7 @@ public final class CokeFurnaceUtil {
             MAX_PRODUCED_CREOSOTE = 12_000,
             CREOSOTE_PER_BUCKET = 3_000;
 
-    public final static int INGREDIENT_SLOT_X_OFFSET = 42,
-            INGREDIENT_SLOT_Y_OFFSET = 35,
-            RESULT_SLOT_X_OFFSET = INGREDIENT_SLOT_X_OFFSET + (GreenhouseUtil.SLOT_ICON_SIZE + 4) * 2,
-            RESULT_SLOT_Y_OFFSET = INGREDIENT_SLOT_Y_OFFSET,
-            CREOSOTE_SLOT_X_OFFSET = 139,
-            CREOSOTE_SLOT_Y_OFFSET = 57,
-            PROGRESS_X_OFFSET = INGREDIENT_SLOT_X_OFFSET + GreenhouseUtil.SLOT_ICON_SIZE + 4,
-            PROGRESS_Y_OFFSET = INGREDIENT_SLOT_Y_OFFSET;
+    public final static ResourceLocation GUI_TEXTURE = Greenhouses.NAMESPACE.getLocation("textures/gui/coke_furnace.png");
 
     private static HashSet<Item> INGREDIENTS = null;
 
@@ -54,13 +49,8 @@ public final class CokeFurnaceUtil {
     }
 
     public static final class CokeFurnaceContainerData extends ContainerAutoData {
-        @DataField
         public int progress = 0;
-
-        @DataField
         public int maxProgress = 1;
-
-        @DataField
         public int producedCreosote = 0;
 
         public boolean canInsertCreosote() {

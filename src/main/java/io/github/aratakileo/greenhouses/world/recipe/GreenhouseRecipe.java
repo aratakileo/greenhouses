@@ -1,9 +1,10 @@
-package io.github.aratakileo.greenhouses.recipe;
+package io.github.aratakileo.greenhouses.world.recipe;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.aratakileo.greenhouses.item.ItemRandomRange;
+import io.github.aratakileo.elegantia.world.MultyOutputRecipe;
+import io.github.aratakileo.elegantia.world.item.ItemRandomRange;
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;

@@ -1,12 +1,12 @@
 package io.github.aratakileo.greenhouses;
 
-import io.github.aratakileo.greenhouses.block.ModBlocks;
-import io.github.aratakileo.greenhouses.block.entity.BlockEntitiTypes;
-import io.github.aratakileo.greenhouses.item.CreativeModeTab;
-import io.github.aratakileo.greenhouses.item.ModItems;
-import io.github.aratakileo.greenhouses.recipe.RecipeTypes;
-import io.github.aratakileo.greenhouses.screen.container.ContainerMenus;
-import io.github.aratakileo.greenhouses.util.Namespace;
+import io.github.aratakileo.elegantia.core.Namespace;
+import io.github.aratakileo.greenhouses.world.block.ModBlocks;
+import io.github.aratakileo.greenhouses.world.block.entity.BlockEntityTypes;
+import io.github.aratakileo.greenhouses.world.item.ItemGroup;
+import io.github.aratakileo.greenhouses.world.item.ModItems;
+import io.github.aratakileo.greenhouses.world.recipe.RecipeTypes;
+import io.github.aratakileo.greenhouses.world.container.ContainerMenus;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 
@@ -19,8 +19,8 @@ public class Greenhouses implements ModInitializer {
         // Initialization must take place in this order, otherwise the universe will collapse
         ModItems.init();
         ModBlocks.init();
-        CreativeModeTab.init();
-        BlockEntitiTypes.init();
+        ItemGroup.init();
+        BlockEntityTypes.init();
         ContainerMenus.init();
         RecipeTypes.init();
     }

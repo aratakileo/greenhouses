@@ -1,10 +1,11 @@
-package io.github.aratakileo.greenhouses.screen.container;
+package io.github.aratakileo.greenhouses.world.container;
 
-import io.github.aratakileo.greenhouses.item.ModItems;
-import io.github.aratakileo.greenhouses.screen.container.slot.FilteredSlot;
-import io.github.aratakileo.greenhouses.screen.container.slot.FluidSlot;
-import io.github.aratakileo.greenhouses.screen.container.slot.FluidSlotController;
-import io.github.aratakileo.greenhouses.screen.container.slot.ResultSlot;
+import io.github.aratakileo.elegantia.client.graphics.drawable.TextureDrawable;
+import io.github.aratakileo.elegantia.world.container.SimpleContainerMenu;
+import io.github.aratakileo.elegantia.world.slot.ElegantedSlot;
+import io.github.aratakileo.elegantia.world.slot.FluidSlotController;
+import io.github.aratakileo.elegantia.world.slot.SlotController;
+import io.github.aratakileo.greenhouses.world.item.ModItems;
 import io.github.aratakileo.greenhouses.util.CokeFurnaceUtil;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -13,7 +14,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Supplier;
+
 public class CokeFurnaceContainerMenu extends SimpleContainerMenu<CokeFurnaceUtil.CokeFurnaceContainerData> {
+    public final static Supplier<TextureDrawable> INGREDIENT_SLOT_ICON
+            = () -> TextureDrawable.of(CokeFurnaceUtil.GUI_TEXTURE).setUV(176, 16),
+            CREOSOTE_SLOT_ICON = () -> TextureDrawable.of(CokeFurnaceUtil.GUI_TEXTURE).setUV(176, 32);
+
     public CokeFurnaceContainerMenu(int syncId, @NotNull Inventory playerInventory) {
         this(
                 playerInventory,
@@ -34,35 +41,38 @@ public class CokeFurnaceContainerMenu extends SimpleContainerMenu<CokeFurnaceUti
         checkContainerSize(container, CokeFurnaceUtil.TOTAL_SLOTS);
         checkContainerDataCount(data, CokeFurnaceUtil.CONTAINER_DATA_SIZE);
 
-        addSlot(new FilteredSlot(
+        addSlot(new ElegantedSlot(
                 container,
-                CokeFurnaceUtil::isIngredient,
+                SlotController.filtered(CokeFurnaceUtil::isIngredient),
                 CokeFurnaceUtil.INGREDIENT_SLOT,
-                CokeFurnaceUtil.INGREDIENT_SLOT_X_OFFSET,
-                CokeFurnaceUtil.INGREDIENT_SLOT_Y_OFFSET
-        ));
+                42,
+                35
+        ).setIconGetter(INGREDIENT_SLOT_ICON));
 
-        addSlot(new ResultSlot(
+        addSlot(new ElegantedSlot(
                 container,
+                SlotController.RESULT,
                 CokeFurnaceUtil.RESULT_SLOT,
-                CokeFurnaceUtil.RESULT_SLOT_X_OFFSET,
-                CokeFurnaceUtil.RESULT_SLOT_Y_OFFSET
+                82,
+                35
         ));
 
-        final var FLUID_SLOT_CONTROLLER = new FluidSlotController.Builder(ModItems.CREOSOTE_BUCKET)
+        final var FLUID_SLOT_CONTROLLER = new FluidSlotController.Builder(
+                ModItems.CREOSOTE_BUCKET,
+                () -> data.producedCreosote += CokeFurnaceUtil.CREOSOTE_PER_BUCKET,
+                () -> data.producedCreosote -= CokeFurnaceUtil.CREOSOTE_PER_BUCKET
+        )
                 .setMayInsertFluid(data::canInsertCreosote)
                 .setMayTakeFluid(data::canTakeCreosote)
-                .setOnTakeFluid(() -> data.producedCreosote -= CokeFurnaceUtil.CREOSOTE_PER_BUCKET)
-                .setOnInsertFluid(() -> data.producedCreosote += CokeFurnaceUtil.CREOSOTE_PER_BUCKET)
                 .build();
 
-        addSlot(new FluidSlot(
-                FLUID_SLOT_CONTROLLER,
+        addSlot(new ElegantedSlot(
                 container,
+                FLUID_SLOT_CONTROLLER,
                 CokeFurnaceUtil.CREOSOTE_SLOT,
-                CokeFurnaceUtil.CREOSOTE_SLOT_X_OFFSET,
-                CokeFurnaceUtil.CREOSOTE_SLOT_Y_OFFSET
-        ));
+                139,
+                57
+        ).setIconGetter(CREOSOTE_SLOT_ICON));
 
         addPlayerInventorySlots(playerInventory);
         addPlayerHotbarSlots(playerInventory);
@@ -104,13 +114,5 @@ public class CokeFurnaceContainerMenu extends SimpleContainerMenu<CokeFurnaceUti
 
     public int getProducedCreosote() {
         return data.producedCreosote;
-    }
-
-    public boolean isIngredientSlotEmpty() {
-        return !getSlot(CokeFurnaceUtil.INGREDIENT_SLOT).hasItem();
-    }
-
-    public boolean isCreosoteSlotEmpty() {
-        return !getSlot(CokeFurnaceUtil.CREOSOTE_SLOT).hasItem();
     }
 }

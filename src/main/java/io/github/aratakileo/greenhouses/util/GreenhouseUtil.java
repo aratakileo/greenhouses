@@ -1,7 +1,9 @@
 package io.github.aratakileo.greenhouses.util;
 
-import io.github.aratakileo.greenhouses.ContainerAutoData;
-import io.github.aratakileo.greenhouses.recipe.RecipeTypes;
+import io.github.aratakileo.elegantia.world.container.ContainerAutoData;
+import io.github.aratakileo.greenhouses.Greenhouses;
+import io.github.aratakileo.greenhouses.world.recipe.RecipeTypes;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -21,24 +23,8 @@ public class GreenhouseUtil {
             RECIPE_INPUT_SLOTS = 2,
             RECIPE_DEFAULT_GROWTH_RATE = 1000;
 
-    public final static int PROGRESS_X_OFFSET = 97,
-            PROGRESS_Y_OFFSET = 35,
-            WET_STATE_X_OFFSET = 29,
-            WET_STATE_Y_OFFSET = PROGRESS_Y_OFFSET,
-            WATER_SLOT_X_OFFSET = 50,
-            WATER_SLOT_Y_OFFSET = PROGRESS_Y_OFFSET,
-            PLANT_SLOT_X_OFFSET = 70,
-            PLANT_SLOT_Y_OFFSET = 24,
-            GROUND_SLOT_X_OFFSET = PLANT_SLOT_X_OFFSET,
-            GROUND_SLOT_Y_OFFSET = 45,
-            SLOT_ICON_SIZE = 16;
 
-    // Progress fail codes that allow to specify some of the reasons why to craft the current recipe is impossible
-    public final static int NO_FAILS_CODE = 0,
-            INVALID_RECIPE_CODE = 1,
-            DOES_NOT_NEED_WATER_CODE = 2,
-            NEEDS_WATER_CODE = 3,
-            NOT_ENOUGH_OUTPUT_SPACE_CODE = 4;
+    public final static ResourceLocation GUI_TEXTURE = Greenhouses.NAMESPACE.getLocation("textures/gui/greenhouse.png");
 
     private static HashSet<Item> GROUNDS = null, PLANTS = null;
 
@@ -60,6 +46,10 @@ public class GreenhouseUtil {
         return GROUNDS;
     }
 
+    public static boolean isGround(@NotNull ItemStack item) {
+        return isGround(item.getItem());
+    }
+
     public static boolean isGround(@NotNull Item item) {
         return getGrounds().contains(item);
     }
@@ -79,16 +69,17 @@ public class GreenhouseUtil {
     }
 
     public static final class GreenhouseContainerData extends ContainerAutoData {
-        @DataField
         public int progress = 0;
-
-        @DataField
         public int maxProgress = 1;
-
-        @DataField
         public boolean hasWater = false;
+        public FailType failType = FailType.NONE;
+    }
 
-        @DataField
-        public int failCode = GreenhouseUtil.NO_FAILS_CODE;
+    public enum FailType {
+        NONE,
+        INVALID_RECIPE,
+        DOES_NOT_NEED_WATER,
+        NEEDS_WATER,
+        NOT_ENOUGH_OUTPUT_SPACE
     }
 }

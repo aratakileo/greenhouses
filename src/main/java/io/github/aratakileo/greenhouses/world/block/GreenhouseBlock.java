@@ -1,11 +1,12 @@
-package io.github.aratakileo.greenhouses.block;
+package io.github.aratakileo.greenhouses.world.block;
 
 import com.mojang.serialization.MapCodec;
-import io.github.aratakileo.greenhouses.block.entity.BlockEntitiTypes;
-import io.github.aratakileo.greenhouses.block.entity.GreenhouseBlockEntity;
-import io.github.aratakileo.greenhouses.screen.container.slot.GroundSlot;
+import io.github.aratakileo.greenhouses.world.block.entity.BlockEntityTypes;
+import io.github.aratakileo.greenhouses.world.block.entity.GreenhouseBlockEntity;
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
+import io.github.aratakileo.greenhouses.world.container.GroundSlotController;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -20,7 +21,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class GreenhouseBlock extends EntityBlock {
+public class GreenhouseBlock extends BaseEntityBlock {
     private final static MapCodec<GreenhouseBlock> CODEC = simpleCodec(GreenhouseBlock::new);
 
     protected GreenhouseBlock(Properties properties) {
@@ -65,26 +66,32 @@ public class GreenhouseBlock extends EntityBlock {
 
         return createTickerHelper(
                 blockEntityType,
-                BlockEntitiTypes.GREENHOUSE_BLOCK_ENTITY_TYPE,
+                BlockEntityTypes.GREENHOUSE_BLOCK_ENTITY_TYPE,
                 ((lvl, blockPos, _blockState, blockEntity) -> blockEntity.tick(lvl, blockPos, _blockState))
         );
     }
 
     @Override
-    protected void onRemove(@NotNull BlockState oldState, @NotNull Level level, @NotNull BlockPos blockPos, @NotNull BlockState newState, boolean moved) {
+    protected void onRemove(
+            @NotNull BlockState oldState,
+            @NotNull Level level,
+            @NotNull BlockPos blockPos,
+            @NotNull BlockState newState,
+            boolean moved
+    ) {
         if (level.getBlockEntity(blockPos) instanceof GreenhouseBlockEntity blockEntity && blockEntity.hasWater())
             level.setBlock(blockPos, Blocks.WATER.defaultBlockState(), 2);
 
         if (level.getBlockEntity(blockPos) instanceof GreenhouseBlockEntity blockEntity) {
             final var itemStack = blockEntity.getItem(GreenhouseUtil.GROUND_INPUT_SLOT);
 
-            if (GroundSlot.shouldPrepareBeforePickup(itemStack))
-                GroundSlot.prepareBeforePickup(
-                        itemStack,
-                        item -> blockEntity.setItem(GreenhouseUtil.GROUND_INPUT_SLOT, item)
-                );
+            GroundSlotController.prepareBeforePickup(
+                    itemStack,
+                    item -> blockEntity.setItem(GreenhouseUtil.GROUND_INPUT_SLOT, item)
+            );
         }
 
+        Containers.dropContentsOnDestroy(oldState, newState, level, blockPos);
         super.onRemove(oldState, level, blockPos, newState, moved);
     }
 }

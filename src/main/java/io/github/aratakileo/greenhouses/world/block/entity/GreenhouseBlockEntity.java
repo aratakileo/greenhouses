@@ -1,10 +1,11 @@
-package io.github.aratakileo.greenhouses.block.entity;
+package io.github.aratakileo.greenhouses.world.block.entity;
 
-import io.github.aratakileo.greenhouses.block.ModBlocks;
-import io.github.aratakileo.greenhouses.screen.container.GreenhouseContainerMenu;
-import io.github.aratakileo.greenhouses.recipe.GreenhouseRecipe;
-import io.github.aratakileo.greenhouses.recipe.RecipeTypes;
-import io.github.aratakileo.greenhouses.recipe.GreenhouseRecipeInput;
+import io.github.aratakileo.elegantia.world.container.AbstractContainerBlockEntity;
+import io.github.aratakileo.greenhouses.world.block.ModBlocks;
+import io.github.aratakileo.greenhouses.world.container.GreenhouseContainerMenu;
+import io.github.aratakileo.greenhouses.world.recipe.GreenhouseRecipe;
+import io.github.aratakileo.greenhouses.world.recipe.RecipeTypes;
+import io.github.aratakileo.greenhouses.world.recipe.GreenhouseRecipeInput;
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,13 +23,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class GreenhouseBlockEntity extends ContainerBlockEntity {
+public class GreenhouseBlockEntity extends AbstractContainerBlockEntity {
     @CompoundDataField
     private final GreenhouseUtil.GreenhouseContainerData data = new GreenhouseUtil.GreenhouseContainerData();
 
     public GreenhouseBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         super(
-                BlockEntitiTypes.GREENHOUSE_BLOCK_ENTITY_TYPE,
+                BlockEntityTypes.GREENHOUSE_BLOCK_ENTITY_TYPE,
                 blockPos,
                 blockState,
                 ModBlocks.GREENHOUSE,
@@ -46,14 +47,14 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
 
         if (!canInsertItemIntoOutputStacks()) {
             data.progress = 0;
-            data.failCode = GreenhouseUtil.NOT_ENOUGH_OUTPUT_SPACE_CODE;
+            data.failType = GreenhouseUtil.FailType.NOT_ENOUGH_OUTPUT_SPACE;
             setChanged();
             return;
         }
 
         if (getGroundInputStack().isEmpty() || getPlantInputStack().isEmpty()) {
             data.progress = 0;
-            data.failCode = GreenhouseUtil.NO_FAILS_CODE;
+            data.failType = GreenhouseUtil.FailType.NONE;
             setChanged();
             return;
         }
@@ -65,11 +66,14 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
             setChanged();
 
             if (getCurrentRecipe(true).isEmpty()) {
-                data.failCode = GreenhouseUtil.INVALID_RECIPE_CODE;
+                data.failType = GreenhouseUtil.FailType.INVALID_RECIPE;
                 return;
             }
 
-            data.failCode = hasWater() ? GreenhouseUtil.DOES_NOT_NEED_WATER_CODE : GreenhouseUtil.NEEDS_WATER_CODE;
+            data.failType = hasWater()
+                    ? GreenhouseUtil.FailType.DOES_NOT_NEED_WATER
+                    : GreenhouseUtil.FailType.NEEDS_WATER;
+
             return;
         }
 
@@ -77,14 +81,14 @@ public class GreenhouseBlockEntity extends ContainerBlockEntity {
 
         if (!canInsertItemIntoOutputStacks(recipe.value().getResultItems())) {
             data.progress = 0;
-            data.failCode = GreenhouseUtil.NOT_ENOUGH_OUTPUT_SPACE_CODE;
+            data.failType = GreenhouseUtil.FailType.NOT_ENOUGH_OUTPUT_SPACE;
             setChanged();
             return;
         }
 
         data.progress++;
         data.maxProgress = recipeOptional.orElseThrow().value().getDuration();
-        data.failCode = GreenhouseUtil.NO_FAILS_CODE;
+        data.failType = GreenhouseUtil.FailType.NONE;
 
         setChanged();
 

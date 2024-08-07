@@ -1,7 +1,11 @@
-package io.github.aratakileo.greenhouses.screen.container;
+package io.github.aratakileo.greenhouses.world.container;
 
-import io.github.aratakileo.greenhouses.screen.container.slot.*;
-import io.github.aratakileo.greenhouses.screen.container.slot.ResultSlot;
+import io.github.aratakileo.elegantia.client.graphics.drawable.TextureDrawable;
+import io.github.aratakileo.elegantia.world.container.SimpleContainerMenu;
+import io.github.aratakileo.elegantia.world.slot.ElegantedSlot;
+import io.github.aratakileo.elegantia.world.slot.FluidSlotController;
+import io.github.aratakileo.elegantia.world.slot.SlotController;
+import io.github.aratakileo.greenhouses.Greenhouses;
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -11,7 +15,14 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Supplier;
+
 public class GreenhouseContainerMenu extends SimpleContainerMenu<GreenhouseUtil.GreenhouseContainerData> {
+    private final static Supplier<TextureDrawable> PLANT_SLOT_ICON
+            = () -> TextureDrawable.of(GreenhouseUtil.GUI_TEXTURE).setUV(176, 64),
+            GROUND_SLOT_ICON = () -> TextureDrawable.of(GreenhouseUtil.GUI_TEXTURE).setUV(176, 80),
+            WATER_SLOT_ICON = () -> TextureDrawable.of(GreenhouseUtil.GUI_TEXTURE).setUV(176, 48);
+
     public GreenhouseContainerMenu(int syncId, @NotNull Inventory inventory) {
         this(
                 inventory,
@@ -32,34 +43,45 @@ public class GreenhouseContainerMenu extends SimpleContainerMenu<GreenhouseUtil.
         checkContainerSize(container, GreenhouseUtil.TOTAL_SLOTS);
         checkContainerDataCount(data, GreenhouseUtil.CONTAINER_DATA_SIZE);
 
-        addSlot(new SingleItemFilteredSlot(
+        addSlot(new ElegantedSlot(
                 container,
-                GreenhouseUtil::isPlant,
+                new SlotController.Builder().setSingeItemMaxStackSize().setMayPlace(GreenhouseUtil::isPlant).build(),
                 GreenhouseUtil.PLANT_INPUT_SLOT,
-                GreenhouseUtil.PLANT_SLOT_X_OFFSET,
-                GreenhouseUtil.PLANT_SLOT_Y_OFFSET
-        ));
+                70,
+                24
+        ).setIconGetter(PLANT_SLOT_ICON));
 
-        addSlot(new GroundSlot(container, GreenhouseUtil.GROUND_INPUT_SLOT, 70, 45));
+        addSlot(new ElegantedSlot(
+                container,
+                new GroundSlotController(),
+                GreenhouseUtil.GROUND_INPUT_SLOT,
+                70,
+                45
+        ).setIconGetter(GROUND_SLOT_ICON));
 
         final var FLUID_SLOT_CONTROLLER = new FluidSlotController.Builder(
-                Items.WATER_BUCKET
-        ).setMayTakeFluid(this::isGroundWet)
-                .setOnTakeFluid(() -> data.hasWater = false)
-                .setOnInsertFluid(() -> data.hasWater = true)
-                .build();
+                Items.WATER_BUCKET,
+                () -> data.hasWater = true,
+                () -> data.hasWater = false
+        ).setMayTakeFluid(this::isGroundWet).build();
 
-        addSlot(new FluidSlot(
-                FLUID_SLOT_CONTROLLER,
+        addSlot(new ElegantedSlot(
                 container,
+                FLUID_SLOT_CONTROLLER,
                 GreenhouseUtil.WATER_INPUT_SLOT,
-                GreenhouseUtil.WATER_SLOT_X_OFFSET,
-                GreenhouseUtil.WATER_SLOT_Y_OFFSET
-        ));
+                50,
+                35
+        ).setIconGetter(WATER_SLOT_ICON));
 
         for (var i = GreenhouseUtil.INPUT_SLOTS; i < GreenhouseUtil.TOTAL_SLOTS; i++) {
             final var localIndex = i - GreenhouseUtil.INPUT_SLOTS;
-            addSlot(new ResultSlot(container, i, 124, 17 * (localIndex + 1) + localIndex));
+            addSlot(new ElegantedSlot(
+                    container,
+                    SlotController.RESULT,
+                    i,
+                    124,
+                    17 * (localIndex + 1) + localIndex
+            ));
         }
 
         addPlayerInventorySlots(playerInventory);
@@ -70,24 +92,29 @@ public class GreenhouseContainerMenu extends SimpleContainerMenu<GreenhouseUtil.
 
     @Override
     public void clicked(int slotIndex, int button, @NotNull ClickType clickType, @NotNull Player player) {
-        if (slotIndex == GreenhouseUtil.GROUND_INPUT_SLOT && getSlot(slotIndex) instanceof GroundSlot slot) {
+        final var sourceSlot = slots.get(slotIndex);
+
+        if (
+                slotIndex == GreenhouseUtil.GROUND_INPUT_SLOT
+                        && sourceSlot instanceof ElegantedSlot slot
+                        && slot.controller instanceof GroundSlotController controller
+        ) {
+            final var carriedItem = getCarried();
+
             if (clickType == ClickType.PICKUP) {
-                if (!getCarried().isEmpty() && slot.mayUseHoeOn(getCarried())) {
-                    slot.useHoe(getCarried());
+                if (!carriedItem.isEmpty() && GroundSlotController.mayUseHoe(slot.getItem(), carriedItem)) {
+                    GroundSlotController.useHoe(carriedItem, slot::set);
                     return;
                 }
 
-                if (slot.shouldPrepareBeforePickup())
-                    slot.prepareBeforePickup();
+                GroundSlotController.prepareBeforePickup(slot.getItem(), slot::set);
             }
 
-            if (clickType == ClickType.QUICK_MOVE && slot.shouldPrepareBeforePickup())
-                slot.prepareBeforePickup();
+            if (clickType == ClickType.QUICK_MOVE)
+                GroundSlotController.prepareBeforePickup(slot.getItem(), slot::set);
         }
 
         if (slotIndex >= GreenhouseUtil.TOTAL_SLOTS && clickType == ClickType.QUICK_MOVE) {
-            final var sourceSlot = slots.get(slotIndex);
-
             if (!sourceSlot.hasItem() || !sourceSlot.mayPickup(player)) return;
 
             final var sourceSlotItem = sourceSlot.getItem();
@@ -97,9 +124,13 @@ public class GreenhouseContainerMenu extends SimpleContainerMenu<GreenhouseUtil.
 
                 if (!currentSlot.mayPlace(sourceSlotItem)) continue;
 
+                Greenhouses.LOGGER.warn("Before move: {}", currentSlot.getItem().getDisplayName().getString());
+
                 final var remainingSlotStack = currentSlot.safeInsert(sourceSlotItem);
                 sourceSlot.set(remainingSlotStack);
                 sourceSlot.setChanged();
+
+                Greenhouses.LOGGER.warn("After move: {}", currentSlot.getItem().getDisplayName().getString());
                 return;
             }
             return;
@@ -116,23 +147,11 @@ public class GreenhouseContainerMenu extends SimpleContainerMenu<GreenhouseUtil.
         return (float) data.progress / (float) data.maxProgress;
     }
 
-    public int getFailCode() {
-        return data.failCode;
+    public @NotNull GreenhouseUtil.FailType getFailCode() {
+        return data.failType;
     }
 
     public boolean isInvalidRecipe() {
-        return data.failCode >= GreenhouseUtil.INVALID_RECIPE_CODE;
-    }
-
-    public boolean isBucketSlotEmpty() {
-        return !getSlot(GreenhouseUtil.WATER_INPUT_SLOT).hasItem();
-    }
-
-    public boolean isPlantSlotEmpty() {
-        return !getSlot(GreenhouseUtil.PLANT_INPUT_SLOT).hasItem();
-    }
-
-    public boolean isGroundSlotEmpty() {
-        return !getSlot(GreenhouseUtil.GROUND_INPUT_SLOT).hasItem();
+        return data.failType != GreenhouseUtil.FailType.NONE;
     }
 }
