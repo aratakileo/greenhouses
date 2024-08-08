@@ -5,7 +5,6 @@ import io.github.aratakileo.elegantia.world.container.SimpleContainerMenu;
 import io.github.aratakileo.elegantia.world.slot.ElegantedSlot;
 import io.github.aratakileo.elegantia.world.slot.FluidSlotController;
 import io.github.aratakileo.elegantia.world.slot.SlotController;
-import io.github.aratakileo.greenhouses.Greenhouses;
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -129,13 +128,9 @@ public class GreenhouseContainerMenu extends SimpleContainerMenu<GreenhouseUtil.
 
                 if (!currentSlot.mayPlace(sourceSlotItem)) continue;
 
-                Greenhouses.LOGGER.warn("Before move: {}", currentSlot.getItem().getDisplayName().getString());
-
                 final var remainingSlotStack = currentSlot.safeInsert(sourceSlotItem);
                 sourceSlot.set(remainingSlotStack);
                 sourceSlot.setChanged();
-
-                Greenhouses.LOGGER.warn("After move: {}", currentSlot.getItem().getDisplayName().getString());
                 return;
             }
             return;
