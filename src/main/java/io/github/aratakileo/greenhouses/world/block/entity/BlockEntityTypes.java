@@ -3,6 +3,7 @@ package io.github.aratakileo.greenhouses.world.block.entity;
 import io.github.aratakileo.elegantia.util.RegistriesUtil;
 import io.github.aratakileo.greenhouses.Greenhouses;
 import io.github.aratakileo.greenhouses.world.block.ModBlocks;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -29,6 +30,6 @@ public final class BlockEntityTypes {
     }
 
     public static void init() {
-
+        BlockEntityRenderers.register(GREENHOUSE_BLOCK_ENTITY_TYPE, GreenhouseBlockEntityRenderer::new);
     }
 }

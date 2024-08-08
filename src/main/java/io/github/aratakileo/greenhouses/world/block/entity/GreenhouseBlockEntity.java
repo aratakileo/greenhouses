@@ -9,6 +9,11 @@ import io.github.aratakileo.greenhouses.world.recipe.GreenhouseRecipeInput;
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -42,6 +47,14 @@ public class GreenhouseBlockEntity extends AbstractContainerBlockEntity {
         return new GreenhouseContainerMenu(inventory, this, data, syncId);
     }
 
+    @Override
+    public void setChanged() {
+        assert level != null;
+
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        super.setChanged();
+    }
+
     public void tick(@NotNull Level lvl, @NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         if (lvl.isClientSide) return;
 
@@ -52,7 +65,7 @@ public class GreenhouseBlockEntity extends AbstractContainerBlockEntity {
             return;
         }
 
-        if (getGroundInputStack().isEmpty() || getPlantInputStack().isEmpty()) {
+        if (getGroundItemStack().isEmpty() || getPlantItemStack().isEmpty()) {
             data.progress = 0;
             data.failType = GreenhouseUtil.FailType.NONE;
             setChanged();
@@ -106,8 +119,8 @@ public class GreenhouseBlockEntity extends AbstractContainerBlockEntity {
         return Objects.requireNonNull(getLevel()).getRecipeManager().getRecipeFor(
                 RecipeTypes.GREENHOUSE_RECIPE_TYPE,
                 new GreenhouseRecipeInput(
-                        getPlantInputStack(),
-                        getGroundInputStack(),
+                        getPlantItemStack(),
+                        getGroundItemStack(),
                         invertWaterAvailability != hasWater()
                 ),
                 getLevel()
@@ -139,11 +152,11 @@ public class GreenhouseBlockEntity extends AbstractContainerBlockEntity {
         }
     }
 
-    private @NotNull ItemStack getGroundInputStack() {
+    public @NotNull ItemStack getGroundItemStack() {
         return getItem(GreenhouseUtil.GROUND_INPUT_SLOT);
     }
 
-    private @NotNull ItemStack getPlantInputStack() {
+    public @NotNull ItemStack getPlantItemStack() {
         return getItem(GreenhouseUtil.PLANT_INPUT_SLOT);
     }
 
@@ -221,5 +234,15 @@ public class GreenhouseBlockEntity extends AbstractContainerBlockEntity {
     @Override
     public boolean canPlaceItemThroughFace(int slotIndex, @NotNull ItemStack itemStack, @Nullable Direction direction) {
         return false;
+    }
+
+    @Override
+    public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        return saveWithFullMetadata(provider);
     }
 }
