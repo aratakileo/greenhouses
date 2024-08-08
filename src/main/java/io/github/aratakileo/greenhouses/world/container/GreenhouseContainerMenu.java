@@ -92,6 +92,11 @@ public class GreenhouseContainerMenu extends SimpleContainerMenu<GreenhouseUtil.
 
     @Override
     public void clicked(int slotIndex, int button, @NotNull ClickType clickType, @NotNull Player player) {
+        if (slotIndex < 0) {
+            super.clicked(slotIndex, button, clickType, player);
+            return;
+        }
+
         final var sourceSlot = slots.get(slotIndex);
 
         if (
