@@ -25,10 +25,9 @@
   "mixins": [
     "greenhouses.mixins.json"
   ],
-    
   "depends": {
     "fabricloader": "*",
-    "fabric": "*",
+    "elegantia": "=0.0.1-beta.1",
     "minecraft": ">=${minecraft_version}"
   }
 }
