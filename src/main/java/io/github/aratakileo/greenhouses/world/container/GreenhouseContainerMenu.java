@@ -147,11 +147,11 @@ public class GreenhouseContainerMenu extends SimpleContainerMenu<GreenhouseUtil.
         return (float) data.progress / (float) data.maxProgress;
     }
 
-    public @NotNull GreenhouseUtil.FailType getFailCode() {
-        return data.failType;
+    public @NotNull GreenhouseUtil.ProgressFailState getProgressFailState() {
+        return data.progressFailState;
     }
 
-    public boolean isInvalidRecipe() {
-        return data.failType != GreenhouseUtil.FailType.NONE;
+    public boolean isProgressFailed() {
+        return data.progressFailState != GreenhouseUtil.ProgressFailState.NONE;
     }
 }

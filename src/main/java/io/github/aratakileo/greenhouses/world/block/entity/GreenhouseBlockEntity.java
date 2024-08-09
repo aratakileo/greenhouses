@@ -60,14 +60,14 @@ public class GreenhouseBlockEntity extends AbstractContainerBlockEntity {
 
         if (!canInsertItemIntoOutputStacks()) {
             data.progress = 0;
-            data.failType = GreenhouseUtil.FailType.NOT_ENOUGH_OUTPUT_SPACE;
+            data.progressFailState = GreenhouseUtil.ProgressFailState.NOT_ENOUGH_OUTPUT_SPACE;
             setChanged();
             return;
         }
 
         if (getGroundItemStack().isEmpty() || getPlantItemStack().isEmpty()) {
             data.progress = 0;
-            data.failType = GreenhouseUtil.FailType.NONE;
+            data.progressFailState = GreenhouseUtil.ProgressFailState.NONE;
             setChanged();
             return;
         }
@@ -79,13 +79,13 @@ public class GreenhouseBlockEntity extends AbstractContainerBlockEntity {
             setChanged();
 
             if (getCurrentRecipe(true).isEmpty()) {
-                data.failType = GreenhouseUtil.FailType.INVALID_RECIPE;
+                data.progressFailState = GreenhouseUtil.ProgressFailState.INVALID_RECIPE;
                 return;
             }
 
-            data.failType = hasWater()
-                    ? GreenhouseUtil.FailType.DOES_NOT_NEED_WATER
-                    : GreenhouseUtil.FailType.NEEDS_WATER;
+            data.progressFailState = hasWater()
+                    ? GreenhouseUtil.ProgressFailState.DOES_NOT_NEED_WATER
+                    : GreenhouseUtil.ProgressFailState.NEEDS_WATER;
 
             return;
         }
@@ -94,14 +94,14 @@ public class GreenhouseBlockEntity extends AbstractContainerBlockEntity {
 
         if (!canInsertItemIntoOutputStacks(recipe.value().getResultItems())) {
             data.progress = 0;
-            data.failType = GreenhouseUtil.FailType.NOT_ENOUGH_OUTPUT_SPACE;
+            data.progressFailState = GreenhouseUtil.ProgressFailState.NOT_ENOUGH_OUTPUT_SPACE;
             setChanged();
             return;
         }
 
         data.progress++;
         data.maxProgress = recipeOptional.orElseThrow().value().getDuration();
-        data.failType = GreenhouseUtil.FailType.NONE;
+        data.progressFailState = GreenhouseUtil.ProgressFailState.NONE;
 
         setChanged();
 

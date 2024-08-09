@@ -33,7 +33,7 @@ public class GreenhouseBlockEntityRenderer implements BlockEntityRenderer<Greenh
 
         if (groundItemStack.isEmpty()) return;
 
-        final var groundItem = getBlockItemOrThrow(groundItemStack.getItem());
+        final var groundItem = asBlockItemOrThrow(groundItemStack.getItem());
         final var groundBlock = groundItem.getBlock();
 
         final var plantItemStack = block.getPlantItemStack();
@@ -53,7 +53,7 @@ public class GreenhouseBlockEntityRenderer implements BlockEntityRenderer<Greenh
         poseStack.translate(0, 0.22f, 0);
         poseStack.scale(1, 1, 1);
 
-        final var plantBlock = getBlockItemOrThrow(plantItemStack.getItem()).getBlock();
+        final var plantBlock = asBlockItemOrThrow(plantItemStack.getItem()).getBlock();
 
         blockRenderer.renderSingleBlock(plantBlock.defaultBlockState(), poseStack, multiBufferSource, light, overlay);
 
@@ -67,11 +67,11 @@ public class GreenhouseBlockEntityRenderer implements BlockEntityRenderer<Greenh
         );
     }
 
-    private static @NotNull BlockItem getBlockItemOrThrow(@NotNull Item item) {
+    private static @NotNull BlockItem asBlockItemOrThrow(@NotNull Item item) {
         if (item instanceof BlockItem blockItem)
             return blockItem;
 
-        throw new IllegalStateException("item %s is not a block".formatted(
+        throw new IllegalStateException("item %s is not a block item".formatted(
                 BuiltInRegistries.ITEM.getKey(item)
         ));
     }

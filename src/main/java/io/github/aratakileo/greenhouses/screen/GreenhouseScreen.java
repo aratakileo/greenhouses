@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseContainerMenu> {
     private final TexturedProgressDrawable progressDrawable;
 
-    private final static Rect2i PROGRESS_OFFSET_RECT = Rect2i.ofSquare(97, 35, 16);
+    private final static Rect2i PROGRESS_OFFSET_RECT = Rect2i.square(97, 35, 16);
 
     private final static TextureDrawable PROGRESS_FAILED_ICON = TextureDrawable.of(GreenhouseUtil.GUI_TEXTURE).setUV(
             176, 16
@@ -40,9 +40,9 @@ public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseContaine
     @Override
     public void renderForeground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         if (PROGRESS_OFFSET_RECT.contains(new Vector2ic(mouseX, mouseY).sub(getPanelPos())))
-            showTooltip(menu.isInvalidRecipe()
+            showTooltip(menu.isProgressFailed()
                     ? Component.translatable(
-                            "gui.greenhouses.tooltip.growing_failed_%s".formatted(menu.getFailCode().ordinal())
+                            "gui.greenhouses.tooltip.growing_failed_%s".formatted(menu.getProgressFailState().ordinal())
                     )
                     : Component.translatable(
                             "gui.greenhouses.tooltip.progress",
@@ -62,10 +62,10 @@ public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseContaine
 
         progressDrawable.render(progressRectDrawer);
 
-        if (menu.isInvalidRecipe())
+        if (menu.isProgressFailed())
             PROGRESS_FAILED_ICON.render(progressRectDrawer);
 
         if (menu.isGroundWet())
-            WATER_ICON.render(RectDrawer.ofSquare(guiGraphics, getPanelPos().add(29, 35), 16));
+            WATER_ICON.render(RectDrawer.square(guiGraphics, getPanelPos().add(29, 35), 16));
     }
 }

@@ -72,10 +72,10 @@ public class GreenhouseUtil {
         public int progress = 0;
         public int maxProgress = 1;
         public boolean hasWater = false;
-        public FailType failType = FailType.NONE;
+        public ProgressFailState progressFailState = ProgressFailState.NONE;
     }
 
-    public enum FailType {
+    public enum ProgressFailState {
         NONE,
         INVALID_RECIPE,
         DOES_NOT_NEED_WATER,

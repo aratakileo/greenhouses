@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 public class CokeFurnaceScreen extends AbstractContainerScreen<CokeFurnaceContainerMenu> {
     private final TexturedProgressDrawable progressDrawable;
 
-    private final static Rect2i PROGRESS_OFFSET_RECT = Rect2i.ofSquare(62, 35, 16),
+    private final static Rect2i PROGRESS_OFFSET_RECT = Rect2i.square(62, 35, 16),
             PRODUCED_CREOSOTE_BAR = new Rect2i(162, 27, 9, 49);
 
     public CokeFurnaceScreen(
