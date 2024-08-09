@@ -14,6 +14,8 @@ import net.minecraft.world.level.LightLayer;
 import org.jetbrains.annotations.NotNull;
 
 public class GreenhouseBlockEntityRenderer implements BlockEntityRenderer<GreenhouseBlockEntity> {
+    private static final float GROUND_HEIGHT = 0.22f;
+
     private final BlockEntityRendererProvider.Context context;
 
     public GreenhouseBlockEntityRenderer(@NotNull BlockEntityRendererProvider.Context context) {
@@ -40,7 +42,7 @@ public class GreenhouseBlockEntityRenderer implements BlockEntityRenderer<Greenh
         final var blockRenderer = context.getBlockRenderDispatcher();
 
         poseStack.pushPose();
-        poseStack.translate(0.06f, 0.22f, 0.06f);
+        poseStack.translate(0.06f, GROUND_HEIGHT, 0.06f);
         poseStack.scale(0.94f, 0, 0.94f);
 
         blockRenderer.renderSingleBlock(groundBlock.defaultBlockState(), poseStack, multiBufferSource, light, overlay);
@@ -50,8 +52,8 @@ public class GreenhouseBlockEntityRenderer implements BlockEntityRenderer<Greenh
         if (plantItemStack.isEmpty()) return;
 
         poseStack.pushPose();
-        poseStack.translate(0, 0.22f, 0);
-        poseStack.scale(1, 1, 1);
+        poseStack.translate(GROUND_HEIGHT / 2f, 0.22f, GROUND_HEIGHT / 2f);
+        poseStack.scale(1f - GROUND_HEIGHT, 1f - GROUND_HEIGHT, 1f - GROUND_HEIGHT);
 
         final var plantBlock = asBlockItemOrThrow(plantItemStack.getItem()).getBlock();
 
