@@ -119,6 +119,8 @@ public class GreenhouseBlockEntityRenderer implements BlockEntityRenderer<Greenh
         * because the block state parameters are checked not by the actual contents of the parameter keys,
         * but by the reference of the key instance.
         *
+        * WARN: there may be problems because non-vanilla crops
+        *
         */
 
         return switch (block.getMaxAge()) {
