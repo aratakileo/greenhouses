@@ -42,7 +42,7 @@ public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseContaine
         if (PROGRESS_OFFSET_RECT.contains(new Vector2ic(mouseX, mouseY).sub(getPanelPos())))
             showTooltip(menu.isProgressFailed()
                     ? Component.translatable(
-                            "gui.greenhouses.tooltip.growing_failed_%s".formatted(menu.getProgressFailState().ordinal())
+                            "gui.greenhouses.tooltip.growing_failed_%s".formatted(menu.getGrowFailState().ordinal())
                     )
                     : Component.translatable(
                             "gui.greenhouses.tooltip.progress",

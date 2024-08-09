@@ -72,10 +72,15 @@ public class GreenhouseUtil {
         public int progress = 0;
         public int maxProgress = 1;
         public boolean hasWater = false;
-        public ProgressFailState progressFailState = ProgressFailState.NONE;
+        public GrowFail growFail = GrowFail.NONE;
+
+        public void interruptProgress(@NotNull GreenhouseUtil.GrowFail reason) {
+            progress = 0;
+            growFail = reason;
+        }
     }
 
-    public enum ProgressFailState {
+    public enum GrowFail {
         NONE,
         INVALID_RECIPE,
         DOES_NOT_NEED_WATER,

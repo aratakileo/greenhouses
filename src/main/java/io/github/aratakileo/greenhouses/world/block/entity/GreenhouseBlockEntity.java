@@ -59,15 +59,13 @@ public class GreenhouseBlockEntity extends AbstractContainerBlockEntity {
         if (lvl.isClientSide) return;
 
         if (!canInsertItemIntoOutputStacks()) {
-            data.progress = 0;
-            data.progressFailState = GreenhouseUtil.ProgressFailState.NOT_ENOUGH_OUTPUT_SPACE;
+            data.interruptProgress(GreenhouseUtil.GrowFail.NOT_ENOUGH_OUTPUT_SPACE);
             setChanged();
             return;
         }
 
         if (getGroundItemStack().isEmpty() || getPlantItemStack().isEmpty()) {
-            data.progress = 0;
-            data.progressFailState = GreenhouseUtil.ProgressFailState.NONE;
+            data.interruptProgress(GreenhouseUtil.GrowFail.NONE);
             setChanged();
             return;
         }
@@ -75,17 +73,17 @@ public class GreenhouseBlockEntity extends AbstractContainerBlockEntity {
         final var recipeOptional = getCurrentRecipe(false);
 
         if (recipeOptional.isEmpty()) {
-            data.progress = 0;
-            setChanged();
-
             if (getCurrentRecipe(true).isEmpty()) {
-                data.progressFailState = GreenhouseUtil.ProgressFailState.INVALID_RECIPE;
+                data.interruptProgress(GreenhouseUtil.GrowFail.INVALID_RECIPE);
+                setChanged();
                 return;
             }
 
-            data.progressFailState = hasWater()
-                    ? GreenhouseUtil.ProgressFailState.DOES_NOT_NEED_WATER
-                    : GreenhouseUtil.ProgressFailState.NEEDS_WATER;
+            data.interruptProgress(hasWater()
+                    ? GreenhouseUtil.GrowFail.DOES_NOT_NEED_WATER
+                    : GreenhouseUtil.GrowFail.NEEDS_WATER
+            );
+            setChanged();
 
             return;
         }
@@ -93,26 +91,33 @@ public class GreenhouseBlockEntity extends AbstractContainerBlockEntity {
         final var recipe = recipeOptional.orElseThrow();
 
         if (!canInsertItemIntoOutputStacks(recipe.value().getResultItems())) {
-            data.progress = 0;
-            data.progressFailState = GreenhouseUtil.ProgressFailState.NOT_ENOUGH_OUTPUT_SPACE;
+            data.interruptProgress(GreenhouseUtil.GrowFail.NOT_ENOUGH_OUTPUT_SPACE);
             setChanged();
             return;
         }
 
         data.progress++;
         data.maxProgress = recipeOptional.orElseThrow().value().getDuration();
-        data.progressFailState = GreenhouseUtil.ProgressFailState.NONE;
-
-        setChanged();
+        data.growFail = GreenhouseUtil.GrowFail.NONE;
 
         if (data.progress > data.maxProgress) {
             addToOutputStacks(recipeOptional.orElseThrow().value().getResultItems());
             data.progress = 0;
         }
+
+        setChanged();
     }
 
     public boolean hasWater() {
         return data.hasWater;
+    }
+
+    public float getProgress() {
+        return (float) data.progress / (float) data.maxProgress;
+    }
+
+    public boolean growFailedByInvalidRecipe() {
+        return data.growFail == GreenhouseUtil.GrowFail.INVALID_RECIPE;
     }
 
     private @NotNull Optional<RecipeHolder<GreenhouseRecipe>> getCurrentRecipe(boolean invertWaterAvailability) {

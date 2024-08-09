@@ -11,10 +11,19 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Optional;
+
 public class GreenhouseBlockEntityRenderer implements BlockEntityRenderer<GreenhouseBlockEntity> {
-    private static final float GROUND_HEIGHT = 0.22f;
+    private static final float GROUND_HEIGHT = 0.22f,
+            PLANT_SCALE = 1f - GROUND_HEIGHT,
+            GROUND_POS_OFFSET = 0.06f,
+            PLANT_POS_OFFSET = GROUND_HEIGHT / 2f;
 
     private final BlockEntityRendererProvider.Context context;
 
@@ -24,40 +33,58 @@ public class GreenhouseBlockEntityRenderer implements BlockEntityRenderer<Greenh
 
     @Override
     public void render(
-            @NotNull GreenhouseBlockEntity block,
+            @NotNull GreenhouseBlockEntity greenhouseBlock,
             float dt,
             @NotNull PoseStack poseStack,
             @NotNull MultiBufferSource multiBufferSource,
             int light,
             int overlay
     ) {
-        final var groundItemStack = block.getGroundItemStack();
+        final var groundItemStack = greenhouseBlock.getGroundItemStack();
 
         if (groundItemStack.isEmpty()) return;
 
         final var groundItem = asBlockItemOrThrow(groundItemStack.getItem());
         final var groundBlock = groundItem.getBlock();
 
-        final var plantItemStack = block.getPlantItemStack();
+        final var plantItemStack = greenhouseBlock.getPlantItemStack();
         final var blockRenderer = context.getBlockRenderDispatcher();
 
         poseStack.pushPose();
-        poseStack.translate(0.06f, GROUND_HEIGHT, 0.06f);
-        poseStack.scale(0.94f, 0, 0.94f);
+        poseStack.translate(GROUND_POS_OFFSET, GROUND_HEIGHT, GROUND_POS_OFFSET);
+        poseStack.scale(1 - GROUND_POS_OFFSET, 0, 1 - GROUND_POS_OFFSET);
 
         blockRenderer.renderSingleBlock(groundBlock.defaultBlockState(), poseStack, multiBufferSource, light, overlay);
 
         poseStack.popPose();
 
-        if (plantItemStack.isEmpty()) return;
-
-        poseStack.pushPose();
-        poseStack.translate(GROUND_HEIGHT / 2f, 0.22f, GROUND_HEIGHT / 2f);
-        poseStack.scale(1f - GROUND_HEIGHT, 1f - GROUND_HEIGHT, 1f - GROUND_HEIGHT);
+        if (plantItemStack.isEmpty() || greenhouseBlock.growFailedByInvalidRecipe()) return;
 
         final var plantBlock = asBlockItemOrThrow(plantItemStack.getItem()).getBlock();
 
-        blockRenderer.renderSingleBlock(plantBlock.defaultBlockState(), poseStack, multiBufferSource, light, overlay);
+        final Optional<CropBlock> cropBlockContainer = plantBlock instanceof CropBlock cropBlock
+                ? Optional.of(cropBlock)
+                : Optional.empty();
+
+        final var growScale = cropBlockContainer.isEmpty() ? greenhouseBlock.getProgress() : 1f;
+        final var plantScale = PLANT_SCALE * growScale;
+        final var posOffset = PLANT_POS_OFFSET + (0.5f - PLANT_POS_OFFSET) * (1f - growScale);
+
+        poseStack.pushPose();
+        poseStack.translate(posOffset, GROUND_HEIGHT, posOffset);
+        poseStack.scale(plantScale, plantScale, plantScale);
+
+        blockRenderer.renderSingleBlock(
+                cropBlockContainer.map(
+                        cropBlock -> getCropBlockState(cropBlock, greenhouseBlock.getProgress())
+                ).orElseGet(
+                        plantBlock::defaultBlockState
+                ),
+                poseStack,
+                multiBufferSource,
+                light,
+                overlay
+        );
 
         poseStack.popPose();
     }
@@ -76,5 +103,34 @@ public class GreenhouseBlockEntityRenderer implements BlockEntityRenderer<Greenh
         throw new IllegalStateException("item %s is not a block item".formatted(
                 BuiltInRegistries.ITEM.getKey(item)
         ));
+    }
+
+    private static @NotNull BlockState getCropBlockState(@NotNull CropBlock cropBlock, float growProgress) {
+        return cropBlock.defaultBlockState().setValue(
+                getAgeProperty(cropBlock),
+                (int)(((float)cropBlock.getMaxAge()) * growProgress)
+        );
+    }
+
+    private static @NotNull IntegerProperty getAgeProperty(@NotNull CropBlock block) {
+        /*
+        *
+        * It is necessary to obtain parameter keys in this way
+        * because the block state parameters are checked not by the actual contents of the parameter keys,
+        * but by the reference of the key instance.
+        *
+        */
+
+        return switch (block.getMaxAge()) {
+            case 1 -> BlockStateProperties.AGE_1;
+            case 2 -> BlockStateProperties.AGE_2;
+            case 3 -> BlockStateProperties.AGE_3;
+            case 4 -> BlockStateProperties.AGE_4;
+            case 5 -> BlockStateProperties.AGE_5;
+            case 7 -> BlockStateProperties.AGE_7;
+            case 15 -> BlockStateProperties.AGE_15;
+            case 25 -> BlockStateProperties.AGE_25;
+            default -> throw new IllegalStateException("Unexpected max age value: " + block.getMaxAge());
+        };
     }
 }
