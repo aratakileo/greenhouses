@@ -1,6 +1,6 @@
 package io.github.aratakileo.greenhouses.world.container;
 
-import io.github.aratakileo.elegantia.client.graphics.GuiGraphicsUtil;
+import io.github.aratakileo.elegantia.client.graphics.ElGuiGraphics;
 import io.github.aratakileo.elegantia.world.slot.SlotController;
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import net.minecraft.sounds.SoundEvents;
@@ -54,13 +54,13 @@ public class GroundSlotController implements SlotController {
     ) {
         hoe.setDamageValue(hoe.getDamageValue() + 1);
         slotSetter.accept(new ItemStack(Items.FARMLAND));
-        GuiGraphicsUtil.playSound(SoundEvents.HOE_TILL);
+        ElGuiGraphics.playSound(SoundEvents.HOE_TILL);
     }
 
     public static void prepareBeforePickup(@NotNull ItemStack slot, @NotNull Consumer<ItemStack> slotSetter) {
         if (!slot.is(Items.FARMLAND)) return;
 
         slotSetter.accept(new ItemStack(Items.DIRT, slot.getCount()));
-        GuiGraphicsUtil.playSound(SoundEvents.HOE_TILL);
+        ElGuiGraphics.playSound(SoundEvents.HOE_TILL);
     }
 }
