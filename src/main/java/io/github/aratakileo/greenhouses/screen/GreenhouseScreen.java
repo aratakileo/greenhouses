@@ -1,14 +1,13 @@
 package io.github.aratakileo.greenhouses.screen;
 
+import io.github.aratakileo.elegantia.client.graphics.ElGuiGraphics;
 import io.github.aratakileo.elegantia.client.graphics.drawable.TextureDrawable;
 import io.github.aratakileo.elegantia.client.graphics.drawable.TexturedProgressDrawable;
-import io.github.aratakileo.elegantia.client.graphics.drawer.RectDrawer;
 import io.github.aratakileo.elegantia.client.gui.screen.AbstractContainerScreen;
 import io.github.aratakileo.elegantia.core.math.Rect2i;
 import io.github.aratakileo.elegantia.core.math.Vector2ic;
 import io.github.aratakileo.greenhouses.world.container.GreenhouseContainerMenu;
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -38,8 +37,8 @@ public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseContaine
     }
 
     @Override
-    public void renderForeground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        if (PROGRESS_OFFSET_RECT.contains(new Vector2ic(mouseX, mouseY).sub(getPanelPos())))
+    public void renderForeground(@NotNull ElGuiGraphics guiGraphics, @NotNull Vector2ic mousePos, float dt) {
+        if (PROGRESS_OFFSET_RECT.contains(mousePos.sub(getPanelPos())))
             showTooltip(menu.isProgressFailed()
                     ? Component.translatable(
                             "gui.greenhouses.tooltip.growing_failed_%s".formatted(menu.getGrowFailState().ordinal())
@@ -50,15 +49,12 @@ public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseContaine
                     )
             );
 
-        super.renderForeground(guiGraphics, mouseX, mouseY, delta);
+        super.renderForeground(guiGraphics, mousePos, dt);
     }
 
     @Override
-    public void renderBackgroundContent(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float dt) {
-        final var progressRectDrawer = new RectDrawer(
-                guiGraphics,
-                PROGRESS_OFFSET_RECT.copy().move(getPanelPos())
-        );
+    public void renderBackgroundContent(@NotNull ElGuiGraphics elGuiGraphics, @NotNull Vector2ic vector2ic, float v) {
+        final var progressRectDrawer = elGuiGraphics.rect(PROGRESS_OFFSET_RECT.copy().move(getPanelPos()));
 
         progressDrawable.render(progressRectDrawer);
 
@@ -66,6 +62,6 @@ public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseContaine
             PROGRESS_FAILED_ICON.render(progressRectDrawer);
 
         if (menu.isGroundWet())
-            WATER_ICON.render(RectDrawer.square(guiGraphics, getPanelPos().add(29, 35), 16));
+            WATER_ICON.render(elGuiGraphics.square(getPanelPos().add(29, 35), 16));
     }
 }
