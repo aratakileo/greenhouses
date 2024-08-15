@@ -1,6 +1,5 @@
 package io.github.aratakileo.greenhouses.util;
 
-import com.google.common.util.concurrent.AtomicDouble;
 import io.github.aratakileo.elegantia.client.graphics.ElGuiGraphics;
 import io.github.aratakileo.elegantia.client.graphics.drawable.TextureDrawable;
 import io.github.aratakileo.elegantia.client.graphics.drawable.TexturedProgressDrawable;

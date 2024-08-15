@@ -21,6 +21,7 @@ public class GreenhousesReiClientPlugin implements REIClientPlugin {
     public void registerCategories(@NotNull CategoryRegistry registry) {
         registry.add(new GreenhouseCategory());
         registry.add(new CokeFurnaceCategory());
+
         registry.addWorkstations(GreenhouseCategory.IDENTIFIER, EntryStacks.of(ModBlocks.GREENHOUSE));
         registry.addWorkstations(CokeFurnaceCategory.IDENTIFIER, EntryStacks.of(ModBlocks.COKE_FURNACE));
     }
