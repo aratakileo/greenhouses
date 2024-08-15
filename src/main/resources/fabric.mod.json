@@ -20,6 +20,9 @@
   "entrypoints": {
     "main": [
       "io.github.aratakileo.greenhouses.Greenhouses"
+    ],
+    "rei_client": [
+      "io.github.aratakileo.greenhouses.compat.GreenhousesReiClientPlugin"
     ]
   },
   "mixins": [
