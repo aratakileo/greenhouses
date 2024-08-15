@@ -7,9 +7,8 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-    maven {
-        url = "https://api.modrinth.com/maven"
-    }
+    maven { url "https://api.modrinth.com/maven" }
+    maven { url "https://maven.shedaniel.me" }
 }
 
 fabricApi {
@@ -24,6 +23,12 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation "maven.modrinth:elegantia:${project.elegantia_version}"
+
+    modImplementation files("lib/basic-math-0.6.1.jar")
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${project.rei_version}"
+    modCompileOnly "dev.architectury:architectury-fabric:${project.architectury_version}"
+    modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+
 }
 
 processResources {
