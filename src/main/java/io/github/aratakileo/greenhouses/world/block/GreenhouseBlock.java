@@ -62,8 +62,6 @@ public class GreenhouseBlock extends BaseEntityBlock {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState blockState, BlockEntityType<T> blockEntityType) {
-        GreenhouseUtil.init(level);
-
         return createTickerHelper(
                 blockEntityType,
                 BlockEntityTypes.GREENHOUSE_BLOCK_ENTITY_TYPE,

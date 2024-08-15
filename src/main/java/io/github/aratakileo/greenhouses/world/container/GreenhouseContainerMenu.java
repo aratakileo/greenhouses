@@ -1,6 +1,6 @@
 package io.github.aratakileo.greenhouses.world.container;
 
-import io.github.aratakileo.elegantia.client.graphics.drawable.TextureDrawable;
+import io.github.aratakileo.elegantia.core.BuiltinTextures;
 import io.github.aratakileo.elegantia.world.container.SimpleContainerMenu;
 import io.github.aratakileo.elegantia.world.slot.ElegantedSlot;
 import io.github.aratakileo.elegantia.world.slot.FluidSlotController;
@@ -14,14 +14,7 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Supplier;
-
 public class GreenhouseContainerMenu extends SimpleContainerMenu<GreenhouseUtil.GreenhouseContainerData> {
-    private final static Supplier<TextureDrawable> PLANT_SLOT_ICON
-            = () -> TextureDrawable.of(GreenhouseUtil.GUI_TEXTURE).setUV(176, 64),
-            GROUND_SLOT_ICON = () -> TextureDrawable.of(GreenhouseUtil.GUI_TEXTURE).setUV(176, 80),
-            WATER_SLOT_ICON = () -> TextureDrawable.of(GreenhouseUtil.GUI_TEXTURE).setUV(176, 48);
-
     public GreenhouseContainerMenu(int syncId, @NotNull Inventory inventory) {
         this(
                 inventory,
@@ -46,17 +39,15 @@ public class GreenhouseContainerMenu extends SimpleContainerMenu<GreenhouseUtil.
                 container,
                 new SlotController.Builder().setSingeItemMaxStackSize().setMayPlace(GreenhouseUtil::isPlant).build(),
                 GreenhouseUtil.PLANT_INPUT_SLOT,
-                70,
-                24
-        ).setIconGetter(PLANT_SLOT_ICON));
+                GreenhouseUtil.PLANT_SLOT_POS
+        ).setIcon(BuiltinTextures.LEAF_SLOT_ICON));
 
         addSlot(new ElegantedSlot(
                 container,
                 new GroundSlotController(),
                 GreenhouseUtil.GROUND_INPUT_SLOT,
-                70,
-                45
-        ).setIconGetter(GROUND_SLOT_ICON));
+                GreenhouseUtil.GROUND_SLOT_POS
+        ).setIcon(BuiltinTextures.BLOCK_SLOT_ICON));
 
         final var FLUID_SLOT_CONTROLLER = new FluidSlotController.Builder(
                 Items.WATER_BUCKET,
@@ -68,20 +59,18 @@ public class GreenhouseContainerMenu extends SimpleContainerMenu<GreenhouseUtil.
                 container,
                 FLUID_SLOT_CONTROLLER,
                 GreenhouseUtil.WATER_INPUT_SLOT,
-                50,
-                35
-        ).setIconGetter(WATER_SLOT_ICON));
+                GreenhouseUtil.WATER_SLOT_POS
+        ).setIcon(BuiltinTextures.BUCKET_SLOT_ICON));
 
-        for (var i = GreenhouseUtil.INPUT_SLOTS; i < GreenhouseUtil.TOTAL_SLOTS; i++) {
-            final var localIndex = i - GreenhouseUtil.INPUT_SLOTS;
+        final var resultSlotPositions = GreenhouseUtil.getResultSlotPositions();
+
+        for (var i = GreenhouseUtil.INPUT_SLOTS; i < GreenhouseUtil.TOTAL_SLOTS; i++)
             addSlot(new ElegantedSlot(
                     container,
                     SlotController.RESULT,
                     i,
-                    124,
-                    17 * (localIndex + 1) + localIndex
+                    resultSlotPositions.get(i - GreenhouseUtil.INPUT_SLOTS)
             ));
-        }
 
         addPlayerInventorySlots(playerInventory);
         addPlayerHotbarSlots(playerInventory);
@@ -143,8 +132,8 @@ public class GreenhouseContainerMenu extends SimpleContainerMenu<GreenhouseUtil.
         return data.hasWater;
     }
 
-    public float getProgress() {
-        return (float) data.progress / (float) data.maxProgress;
+    public float getProgressScale() {
+        return data.getProgressScale();
     }
 
     public @NotNull GreenhouseUtil.GrowFail getGrowFailState() {

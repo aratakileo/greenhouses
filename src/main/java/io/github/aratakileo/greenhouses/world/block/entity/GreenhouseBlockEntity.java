@@ -112,8 +112,8 @@ public class GreenhouseBlockEntity extends AbstractContainerBlockEntity {
         return data.hasWater;
     }
 
-    public float getProgress() {
-        return (float) data.progress / (float) data.maxProgress;
+    public float getProgressScale() {
+        return data.getProgressScale();
     }
 
     public boolean growFailedByInvalidRecipe() {

@@ -66,7 +66,7 @@ public class GreenhouseBlockEntityRenderer implements BlockEntityRenderer<Greenh
                 ? Optional.of(cropBlock)
                 : Optional.empty();
 
-        final var growScale = cropBlockContainer.isEmpty() ? greenhouseBlock.getProgress() : 1f;
+        final var growScale = cropBlockContainer.isEmpty() ? greenhouseBlock.getProgressScale() : 1f;
         final var plantScale = PLANT_SCALE * growScale;
         final var posOffset = PLANT_POS_OFFSET + (0.5f - PLANT_POS_OFFSET) * (1f - growScale);
 
@@ -76,7 +76,7 @@ public class GreenhouseBlockEntityRenderer implements BlockEntityRenderer<Greenh
 
         blockRenderer.renderSingleBlock(
                 cropBlockContainer.map(
-                        cropBlock -> getCropBlockState(cropBlock, greenhouseBlock.getProgress())
+                        cropBlock -> getCropBlockState(cropBlock, greenhouseBlock.getProgressScale())
                 ).orElseGet(
                         plantBlock::defaultBlockState
                 ),

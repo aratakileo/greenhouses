@@ -1,16 +1,16 @@
 package io.github.aratakileo.greenhouses.util;
 
+import io.github.aratakileo.elegantia.core.math.Vector2iInterface;
+import io.github.aratakileo.elegantia.core.math.Vector2ic;
 import io.github.aratakileo.elegantia.world.container.ContainerAutoData;
-import io.github.aratakileo.greenhouses.Greenhouses;
+import io.github.aratakileo.elegantia.world.item.recipe.Recipes;
 import io.github.aratakileo.greenhouses.world.recipe.RecipeTypes;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.ArrayList;
 
 public class GreenhouseUtil {
     public final static int PLANT_INPUT_SLOT = 0,
@@ -23,41 +23,18 @@ public class GreenhouseUtil {
             RECIPE_INPUT_SLOTS = 2,
             RECIPE_DEFAULT_GROWTH_RATE = 1000;
 
-
-    public final static ResourceLocation GUI_TEXTURE = Greenhouses.NAMESPACE.getLocation("textures/gui/greenhouse.png");
-
-    private static HashSet<Item> GROUNDS = null, PLANTS = null;
-
-    public static void init(@NotNull Level level) {
-        if (GROUNDS != null && PLANTS != null) return;
-
-        GROUNDS = new HashSet<>();
-        PLANTS = new HashSet<>();
-
-        for (final var recipe: level.getRecipeManager().getAllRecipesFor(RecipeTypes.GREENHOUSE_RECIPE_TYPE)) {
-            GROUNDS.addAll(Arrays.stream(recipe.value().getGround().getItems()).map(ItemStack::getItem).toList());
-            PLANTS.addAll(Arrays.stream(recipe.value().getPlant().getItems()).map(ItemStack::getItem).toList());
-        }
-    }
-
-    public static @NotNull HashSet<Item> getGrounds() {
-        if (GROUNDS == null) throw new RuntimeException("Something went wrong!");
-
-        return GROUNDS;
-    }
+    public final static Vector2ic PLANT_SLOT_POS = new Vector2ic(70, 24),
+            GROUND_SLOT_POS = new Vector2ic(70, 45),
+            WATER_SLOT_POS = new Vector2ic(50, 35),
+            DROPS_POS = new Vector2ic(29, 35),
+            PROGRESSBAR_POS = new Vector2ic(97, 35);
 
     public static boolean isGround(@NotNull ItemStack item) {
         return isGround(item.getItem());
     }
 
     public static boolean isGround(@NotNull Item item) {
-        return getGrounds().contains(item);
-    }
-
-    public static @NotNull HashSet<Item> getPlants() {
-        if (PLANTS == null) throw new RuntimeException("Something went wrong!");
-
-        return PLANTS;
+        return Recipes.isIngredient(RecipeTypes.GREENHOUSE_RECIPE_TYPE, GROUND_INPUT_SLOT, item);
     }
     
     public static boolean isPlant(@NotNull ItemStack itemStack) {
@@ -65,7 +42,29 @@ public class GreenhouseUtil {
     }
 
     public static boolean isPlant(@NotNull Item item) {
-        return getPlants().contains(item);
+        return Recipes.isIngredient(RecipeTypes.GREENHOUSE_RECIPE_TYPE, PLANT_INPUT_SLOT, item);
+    }
+
+    public static @NotNull ArrayList<Vector2ic> getResultSlotPositions() {
+        return getResultSlotPositions(null);
+    }
+
+    public static @NotNull ArrayList<Vector2ic> getResultSlotPositions(@Nullable Vector2iInterface startPos) {
+        final var positions = new ArrayList<Vector2ic>();
+
+        for (var i = 0; i < INPUT_SLOTS; i++) {
+            final var position = new Vector2ic(124, 17 * (i + 1) + i);
+
+            if (startPos == null)
+                positions.add(position);
+            else positions.add(position.add(startPos));
+        }
+
+        return positions;
+    }
+
+    public static float getProgressScale(int progress, int maxProgress) {
+        return (float) progress / (float) maxProgress;
     }
 
     public static final class GreenhouseContainerData extends ContainerAutoData {
@@ -77,6 +76,10 @@ public class GreenhouseUtil {
         public void interruptProgress(@NotNull GreenhouseUtil.GrowFail reason) {
             progress = 0;
             growFail = reason;
+        }
+
+        public float getProgressScale() {
+            return GreenhouseUtil.getProgressScale(progress, maxProgress);
         }
     }
 

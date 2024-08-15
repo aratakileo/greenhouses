@@ -96,8 +96,6 @@ public class CokeFurnaceBlock extends BaseEntityBlock {
             @NotNull BlockState blockState,
             @NotNull BlockEntityType<T> blockEntityType
     ) {
-        CokeFurnaceUtil.init(level);
-
         return createTickerHelper(
                 blockEntityType,
                 BlockEntityTypes.COKE_FURNACE_BLOCK_ENTITY_TYPE,

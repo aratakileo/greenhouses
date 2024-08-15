@@ -1,10 +1,11 @@
 package io.github.aratakileo.greenhouses.world.container;
 
-import io.github.aratakileo.elegantia.client.graphics.drawable.TextureDrawable;
+import io.github.aratakileo.elegantia.core.BuiltinTextures;
 import io.github.aratakileo.elegantia.world.container.SimpleContainerMenu;
 import io.github.aratakileo.elegantia.world.slot.ElegantedSlot;
 import io.github.aratakileo.elegantia.world.slot.FluidSlotController;
 import io.github.aratakileo.elegantia.world.slot.SlotController;
+import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import io.github.aratakileo.greenhouses.world.item.ModItems;
 import io.github.aratakileo.greenhouses.util.CokeFurnaceUtil;
 import net.minecraft.world.Container;
@@ -14,13 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Supplier;
-
 public class CokeFurnaceContainerMenu extends SimpleContainerMenu<CokeFurnaceUtil.CokeFurnaceContainerData> {
-    public final static Supplier<TextureDrawable> INGREDIENT_SLOT_ICON
-            = () -> TextureDrawable.of(CokeFurnaceUtil.GUI_TEXTURE).setUV(176, 16),
-            CREOSOTE_SLOT_ICON = () -> TextureDrawable.of(CokeFurnaceUtil.GUI_TEXTURE).setUV(176, 32);
-
     public CokeFurnaceContainerMenu(int syncId, @NotNull Inventory playerInventory) {
         this(
                 playerInventory,
@@ -45,16 +40,14 @@ public class CokeFurnaceContainerMenu extends SimpleContainerMenu<CokeFurnaceUti
                 container,
                 SlotController.filtered(CokeFurnaceUtil::isIngredient),
                 CokeFurnaceUtil.INGREDIENT_SLOT,
-                42,
-                35
-        ).setIconGetter(INGREDIENT_SLOT_ICON));
+                CokeFurnaceUtil.INGREDIENT_SLOT_POS
+        ).setIcon(BuiltinTextures.COAL_SLOT_ICON));
 
         addSlot(new ElegantedSlot(
                 container,
                 SlotController.RESULT,
                 CokeFurnaceUtil.RESULT_SLOT,
-                82,
-                35
+                CokeFurnaceUtil.RESULT_SLOT_POS
         ));
 
         final var FLUID_SLOT_CONTROLLER = new FluidSlotController.Builder(
@@ -70,9 +63,8 @@ public class CokeFurnaceContainerMenu extends SimpleContainerMenu<CokeFurnaceUti
                 container,
                 FLUID_SLOT_CONTROLLER,
                 CokeFurnaceUtil.CREOSOTE_SLOT,
-                139,
-                57
-        ).setIconGetter(CREOSOTE_SLOT_ICON));
+                CokeFurnaceUtil.CREOSOTE_SLOT_POS
+        ).setIcon(BuiltinTextures.BUCKET_SLOT_ICON));
 
         addPlayerInventorySlots(playerInventory);
         addPlayerHotbarSlots(playerInventory);
@@ -105,11 +97,11 @@ public class CokeFurnaceContainerMenu extends SimpleContainerMenu<CokeFurnaceUti
     }
 
     public float getProgress() {
-        return (float) data.progress / (float) data.maxProgress;
+        return GreenhouseUtil.getProgressScale(data.progress, data.maxProgress);
     }
 
     public float getProducedCreosoteScale() {
-        return (float) data.producedCreosote / (float) CokeFurnaceUtil.MAX_PRODUCED_CREOSOTE;
+        return CokeFurnaceUtil.getProducedCreosoteScale(data.producedCreosote);
     }
 
     public int getProducedCreosote() {
