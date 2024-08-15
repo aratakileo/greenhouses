@@ -3,9 +3,10 @@ package io.github.aratakileo.greenhouses.world.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.github.aratakileo.elegantia.world.MultyOutputRecipe;
 import io.github.aratakileo.elegantia.world.item.ItemRandomRange;
+import io.github.aratakileo.elegantia.world.item.recipe.MultyOutputRecipe;
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -57,9 +58,22 @@ public class GreenhouseRecipe extends MultyOutputRecipe<GreenhouseRecipeInput> {
                 && match(ground, recipeInput.groundInput());
     }
 
+    public @NotNull List<ItemRandomRange> getRawResultItems() {
+        return result;
+    }
+
     @Override
     public @NotNull List<ItemStack> getResultItems() {
         return result.stream().map(ItemRandomRange::getItemStack).toList();
+    }
+
+    @Override
+    public @NotNull NonNullList<Ingredient> getIngredients() {
+        return NonNullList.of(
+                Ingredient.EMPTY,
+                plant,
+                ground
+        );
     }
 
     @Override

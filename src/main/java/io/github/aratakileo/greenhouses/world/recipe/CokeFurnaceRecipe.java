@@ -4,6 +4,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.aratakileo.greenhouses.util.CokeFurnaceUtil;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
@@ -75,6 +76,11 @@ public class CokeFurnaceRecipe implements Recipe<SingleRecipeInput> {
     @Override
     public @NotNull RecipeType<CokeFurnaceRecipe> getType() {
         return RecipeTypes.COKE_FURNACE_RECIPE_TYPE;
+    }
+
+    @Override
+    public @NotNull NonNullList<Ingredient> getIngredients() {
+        return NonNullList.of(Ingredient.EMPTY, ingredient);
     }
 
     public static class Serializer implements RecipeSerializer<CokeFurnaceRecipe> {
