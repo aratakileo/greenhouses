@@ -3,6 +3,7 @@ package io.github.aratakileo.greenhouses.world.recipe;
 import io.github.aratakileo.elegantia.util.RegistriesUtil;
 import io.github.aratakileo.greenhouses.Greenhouses;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +15,7 @@ public final class RecipeTypes {
             "coking"
     );
 
-    private static <T extends Recipe<?>> RecipeType<T> registerRecipeType(
+    private static <I extends RecipeInput, T extends Recipe<I>> RecipeType<T> registerRecipeType(
             @NotNull String name
     ) {
         return RegistriesUtil.registerRecipeType(Greenhouses.NAMESPACE.getLocation(name));
