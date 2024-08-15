@@ -1,4 +1,4 @@
-package io.github.aratakileo.greenhouses.rei;
+package io.github.aratakileo.greenhouses.world.rei;
 
 import io.github.aratakileo.greenhouses.screen.CokeFurnaceScreen;
 import io.github.aratakileo.greenhouses.screen.GreenhouseScreen;

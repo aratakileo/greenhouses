@@ -1,4 +1,4 @@
-package io.github.aratakileo.greenhouses.rei;
+package io.github.aratakileo.greenhouses.world.rei;
 
 import io.github.aratakileo.elegantia.world.item.ItemRandomRange;
 import io.github.aratakileo.greenhouses.world.recipe.GreenhouseRecipe;

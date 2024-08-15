@@ -1,4 +1,4 @@
-package io.github.aratakileo.greenhouses.rei;
+package io.github.aratakileo.greenhouses.world.rei;
 
 import io.github.aratakileo.elegantia.client.graphics.drawable.TexturedProgressDrawable;
 import io.github.aratakileo.elegantia.core.BuiltinTextures;
