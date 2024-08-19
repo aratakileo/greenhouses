@@ -26,7 +26,7 @@ public class GreenhouseScreen extends AbstractContainerScreen<GreenhouseContaine
         super(abstractContainerMenu, inventory, component);
 
         this.leafProgressDrawable = TexturedProgressDrawable.of(
-                Textures.LEAF_ICON,
+                Textures.LEAF_ICON.get(),
                 TexturedProgressDrawable.Direction.TOP,
                 menu::getProgressScale
         );

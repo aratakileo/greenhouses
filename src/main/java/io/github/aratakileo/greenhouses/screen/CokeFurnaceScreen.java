@@ -25,7 +25,7 @@ public class CokeFurnaceScreen extends AbstractContainerScreen<CokeFurnaceContai
         super(abstractContainerMenu, inventory, component);
 
         this.fireProgressDrawable = TexturedProgressDrawable.of(
-                Textures.FIRE_ICON,
+                Textures.FIRE_ICON.get(),
                 TexturedProgressDrawable.Direction.TOP,
                 menu::getProgress
         );
