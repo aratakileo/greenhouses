@@ -1,7 +1,7 @@
-package io.github.aratakileo.greenhouses.world.rei;
+package io.github.aratakileo.greenhouses.gui.rei;
 
-import io.github.aratakileo.greenhouses.screen.CokeFurnaceScreen;
-import io.github.aratakileo.greenhouses.screen.GreenhouseScreen;
+import io.github.aratakileo.greenhouses.gui.screen.CokeFurnaceScreen;
+import io.github.aratakileo.greenhouses.gui.screen.GreenhouseScreen;
 import io.github.aratakileo.greenhouses.world.block.ModBlocks;
 import io.github.aratakileo.greenhouses.world.recipe.CokeFurnaceRecipe;
 import io.github.aratakileo.greenhouses.world.recipe.GreenhouseRecipe;

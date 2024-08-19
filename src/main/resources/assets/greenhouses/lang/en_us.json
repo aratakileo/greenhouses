@@ -21,5 +21,6 @@
   "gui.greenhouses.tooltip.growing_failed_1": "Invalid growing recipe",
   "gui.greenhouses.tooltip.growing_failed_2": "This plant does not need water",
   "gui.greenhouses.tooltip.growing_failed_3": "This plant needs water",
-  "gui.greenhouses.tooltip.growing_failed_4": "Not enough output slots space"
+  "gui.greenhouses.tooltip.growing_failed_4": "Not enough output slots space",
+  "gui.greenhouses.tooltip.ground_to_farmland": "Use a hoe on a dirt to convert it to the farmland"
 }

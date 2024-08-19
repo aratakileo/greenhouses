@@ -1,4 +1,4 @@
-package io.github.aratakileo.greenhouses.screen;
+package io.github.aratakileo.greenhouses.gui.screen;
 
 import io.github.aratakileo.elegantia.client.graphics.ElGuiGraphics;
 import io.github.aratakileo.elegantia.client.graphics.drawable.TexturedProgressDrawable;
@@ -6,7 +6,7 @@ import io.github.aratakileo.elegantia.client.gui.screen.AbstractContainerScreen;
 import io.github.aratakileo.elegantia.core.BuiltinTextures;
 import io.github.aratakileo.elegantia.core.math.Rect2i;
 import io.github.aratakileo.elegantia.core.math.Vector2ic;
-import io.github.aratakileo.greenhouses.util.Textures;
+import io.github.aratakileo.greenhouses.gui.Textures;
 import io.github.aratakileo.greenhouses.world.container.GreenhouseContainerMenu;
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import net.minecraft.network.chat.Component;

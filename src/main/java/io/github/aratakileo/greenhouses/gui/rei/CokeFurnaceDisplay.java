@@ -1,4 +1,4 @@
-package io.github.aratakileo.greenhouses.world.rei;
+package io.github.aratakileo.greenhouses.gui.rei;
 
 import io.github.aratakileo.greenhouses.world.recipe.CokeFurnaceRecipe;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;

@@ -1,4 +1,4 @@
-package io.github.aratakileo.greenhouses.world.rei;
+package io.github.aratakileo.greenhouses.gui.rei;
 
 import io.github.aratakileo.elegantia.client.graphics.drawable.TexturedProgressDrawable;
 import io.github.aratakileo.elegantia.core.BuiltinTextures;
@@ -6,7 +6,7 @@ import io.github.aratakileo.elegantia.core.math.Vector2ic;
 import io.github.aratakileo.greenhouses.Greenhouses;
 import io.github.aratakileo.greenhouses.util.CokeFurnaceUtil;
 import io.github.aratakileo.greenhouses.util.ReiWidgets;
-import io.github.aratakileo.greenhouses.util.Textures;
+import io.github.aratakileo.greenhouses.gui.Textures;
 import io.github.aratakileo.greenhouses.world.block.ModBlocks;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.Renderer;

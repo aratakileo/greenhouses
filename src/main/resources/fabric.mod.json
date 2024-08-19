@@ -22,7 +22,7 @@
       "io.github.aratakileo.greenhouses.Greenhouses"
     ],
     "rei_client": [
-      "io.github.aratakileo.greenhouses.world.rei.GreenhousesReiClientPlugin"
+      "io.github.aratakileo.greenhouses.gui.rei.GreenhousesReiClientPlugin"
     ]
   },
   "mixins": [

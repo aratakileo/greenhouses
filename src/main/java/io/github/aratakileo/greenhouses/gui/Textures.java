@@ -1,4 +1,4 @@
-package io.github.aratakileo.greenhouses.util;
+package io.github.aratakileo.greenhouses.gui;
 
 import io.github.aratakileo.elegantia.client.graphics.drawable.TextureDrawable;
 import io.github.aratakileo.elegantia.core.TextureProvider;

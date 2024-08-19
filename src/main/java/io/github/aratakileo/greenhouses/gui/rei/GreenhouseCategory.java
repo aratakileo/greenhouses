@@ -1,20 +1,23 @@
-package io.github.aratakileo.greenhouses.world.rei;
+package io.github.aratakileo.greenhouses.gui.rei;
 
 import io.github.aratakileo.elegantia.client.graphics.drawable.TexturedProgressDrawable;
 import io.github.aratakileo.elegantia.core.BuiltinTextures;
 import io.github.aratakileo.elegantia.core.math.Vector2ic;
+import io.github.aratakileo.elegantia.util.RegistriesUtil;
 import io.github.aratakileo.greenhouses.Greenhouses;
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import io.github.aratakileo.greenhouses.util.ReiWidgets;
-import io.github.aratakileo.greenhouses.util.Textures;
+import io.github.aratakileo.greenhouses.gui.Textures;
 import io.github.aratakileo.greenhouses.world.block.ModBlocks;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.gui.Renderer;
 import me.shedaniel.rei.api.client.gui.widgets.Widget;
+import me.shedaniel.rei.api.client.gui.widgets.Widgets;
 import me.shedaniel.rei.api.client.registry.display.DisplayCategory;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.ItemTags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -52,11 +55,28 @@ public class GreenhouseCategory implements DisplayCategory<GreenhouseDisplay> {
                         .entries(display.getInputEntries().get(GreenhouseUtil.PLANT_INPUT_SLOT))
         );
 
+        final var groundPos = GreenhouseUtil.GROUND_SLOT_POS.add(startPos);
+
         widgets.add(
-                ReiWidgets.slot(GreenhouseUtil.GROUND_SLOT_POS.add(startPos))
+                ReiWidgets.slot(groundPos)
                         .markInput()
                         .entries(display.getInputEntries().get(GreenhouseUtil.GROUND_INPUT_SLOT))
         );
+
+        if (display.isGroundFarm)
+            widgets.add(
+                    Widgets.withTooltip(ReiWidgets.squareSlot(groundPos.add(8), 12)
+                            .entries(
+                                    RegistriesUtil.getItemsFromTag(ItemTags.HOES)
+                                            .stream()
+                                            .map(EntryStacks::of)
+                                            .toList()
+                            )
+                            .unmarkInputOrOutput()
+                            .disableBackground(),
+                            Component.translatable("gui.greenhouses.tooltip.ground_to_farmland")
+                    )
+            );
 
         final var dropsPos = GreenhouseUtil.DROPS_POS.add(startPos);
 

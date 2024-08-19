@@ -2,8 +2,8 @@ package io.github.aratakileo.greenhouses.world.container;
 
 import io.github.aratakileo.elegantia.util.RegistriesUtil;
 import io.github.aratakileo.greenhouses.Greenhouses;
-import io.github.aratakileo.greenhouses.screen.CokeFurnaceScreen;
-import io.github.aratakileo.greenhouses.screen.GreenhouseScreen;
+import io.github.aratakileo.greenhouses.gui.screen.CokeFurnaceScreen;
+import io.github.aratakileo.greenhouses.gui.screen.GreenhouseScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;

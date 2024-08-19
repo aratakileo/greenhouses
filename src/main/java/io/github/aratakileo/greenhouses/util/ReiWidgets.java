@@ -53,6 +53,10 @@ public interface ReiWidgets {
         );
     }
 
+    static @NotNull Slot squareSlot(@NotNull Vector2iInterface pos, int size) {
+        return Widgets.createSlot(new Rectangle(pos.x(), pos.y(), size, size));
+    }
+
     static @NotNull Slot slot(@NotNull Vector2iInterface pos) {
         return Widgets.createSlot(new Point(pos.x(), pos.y()));
     }
