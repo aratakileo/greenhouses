@@ -17,7 +17,7 @@
   "item.greenhouses.coked_coal": "Коксовый уголь",
   "item.greenhouses.creosote_bucket": "Ведро креозота",
   "gui.greenhouses.tooltip.progress": "Прогресс: %s",
-  "gui.greenhouses.tooltip.produced_creosote": "Креозота: %s",
+  "gui.greenhouses.tooltip.produced_creosote": "Креозот: %s",
   "gui.greenhouses.tooltip.growing_failed_1": "Не правильный рецепт",
   "gui.greenhouses.tooltip.growing_failed_2": "Этому растению не нужна вода",
   "gui.greenhouses.tooltip.growing_failed_3": "Этому растению необходима вода",
