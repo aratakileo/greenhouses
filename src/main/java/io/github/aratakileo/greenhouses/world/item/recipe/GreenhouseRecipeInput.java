@@ -1,4 +1,4 @@
-package io.github.aratakileo.greenhouses.world.recipe;
+package io.github.aratakileo.greenhouses.world.item.recipe;
 
 import io.github.aratakileo.greenhouses.util.GreenhouseUtil;
 import net.minecraft.world.item.ItemStack;

@@ -4,7 +4,7 @@ import io.github.aratakileo.elegantia.core.math.Vector2iInterface;
 import io.github.aratakileo.elegantia.core.math.Vector2ic;
 import io.github.aratakileo.elegantia.world.container.ContainerAutoData;
 import io.github.aratakileo.elegantia.world.item.recipe.Recipes;
-import io.github.aratakileo.greenhouses.world.recipe.RecipeTypes;
+import io.github.aratakileo.greenhouses.world.item.recipe.RecipeTypes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;

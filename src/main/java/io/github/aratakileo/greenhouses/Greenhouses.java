@@ -6,7 +6,7 @@ import io.github.aratakileo.greenhouses.world.block.entity.BlockEntityTypes;
 import io.github.aratakileo.greenhouses.world.container.ContainerMenus;
 import io.github.aratakileo.greenhouses.world.item.ItemGroup;
 import io.github.aratakileo.greenhouses.world.item.ModItems;
-import io.github.aratakileo.greenhouses.world.recipe.RecipeTypes;
+import io.github.aratakileo.greenhouses.world.item.recipe.RecipeTypes;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 

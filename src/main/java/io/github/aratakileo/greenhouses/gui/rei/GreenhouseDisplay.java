@@ -1,7 +1,7 @@
 package io.github.aratakileo.greenhouses.gui.rei;
 
 import io.github.aratakileo.elegantia.world.item.ItemRandomRange;
-import io.github.aratakileo.greenhouses.world.recipe.GreenhouseRecipe;
+import io.github.aratakileo.greenhouses.world.item.recipe.GreenhouseRecipe;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;

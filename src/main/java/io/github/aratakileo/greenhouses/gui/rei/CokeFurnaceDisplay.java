@@ -1,6 +1,6 @@
 package io.github.aratakileo.greenhouses.gui.rei;
 
-import io.github.aratakileo.greenhouses.world.recipe.CokeFurnaceRecipe;
+import io.github.aratakileo.greenhouses.world.item.recipe.CokeFurnaceRecipe;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;

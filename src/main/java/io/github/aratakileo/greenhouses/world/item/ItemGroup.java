@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 public final class ItemGroup {
     public final static net.minecraft.world.item.CreativeModeTab ITEM_GROUP = FabricItemGroup.builder()
             .icon(() -> new ItemStack(ModBlocks.GREENHOUSE))
-            .title(Component.literal("Greenhouses"))
+            .title(Component.literal(Greenhouses.NAMESPACE.getModOrThrow().getName()))
             .build();
 
     public final static ResourceKey<net.minecraft.world.item.CreativeModeTab> ITEM_GROUP_RESOURCE
