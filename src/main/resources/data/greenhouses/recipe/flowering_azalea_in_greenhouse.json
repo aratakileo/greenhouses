@@ -1,0 +1,27 @@
+{
+  "type": "greenhouses:greenhouse_growing",
+  "duration": 1000,
+  "needs_water": false,
+  "plant": {
+    "item": "minecraft:flowering_azalea"
+  },
+  "ground": {
+    "tag": "minecraft:dirt"
+  },
+  "result": [
+    {
+      "item": "minecraft:oak_log",
+      "min_count": 4,
+      "max_count": 5
+    },
+    {
+      "item": "minecraft:flowering_azalea",
+      "min_count": 1
+    },
+    {
+      "item": "minecraft:stick",
+      "min_count": 3,
+      "max_count": 5
+    }
+  ]
+}

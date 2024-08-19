@@ -1,0 +1,18 @@
+{
+  "type": "greenhouses:greenhouse_growing",
+  "duration": 1000,
+  "needs_water": true,
+  "plant": {
+    "item": "minecraft:carrot"
+  },
+  "ground": {
+    "item": "minecraft:farmland"
+  },
+  "result": [
+    {
+      "item": "minecraft:carrot",
+      "min_count": 2,
+      "max_count": 3
+    }
+  ]
+}

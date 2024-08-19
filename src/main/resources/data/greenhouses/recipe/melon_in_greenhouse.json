@@ -1,0 +1,17 @@
+{
+  "type": "greenhouses:greenhouse_growing",
+  "duration": 1000,
+  "needs_water": true,
+  "plant": {
+    "item": "minecraft:melon_seeds"
+  },
+  "ground": {
+    "item": "minecraft:farmland"
+  },
+  "result": [
+    {
+      "item": "minecraft:melon",
+      "min_count": 1
+    }
+  ]
+}

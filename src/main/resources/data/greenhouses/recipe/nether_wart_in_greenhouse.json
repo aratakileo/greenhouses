@@ -1,0 +1,17 @@
+{
+  "type": "greenhouses:greenhouse_growing",
+  "duration": 800,
+  "needs_water": false,
+  "plant": {
+    "item": "minecraft:nether_wart"
+  },
+  "ground": {
+    "item": "minecraft:soul_sand"
+  },
+  "result": [
+    {
+      "item": "minecraft:nether_wart",
+      "max_count": 3
+    }
+  ]
+}

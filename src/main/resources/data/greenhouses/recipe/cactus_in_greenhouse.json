@@ -1,0 +1,17 @@
+{
+  "type": "greenhouses:greenhouse_growing",
+  "duration": 800,
+  "needs_water": false,
+  "plant": {
+    "item": "minecraft:cactus"
+  },
+  "ground": {
+    "tag": "minecraft:sand"
+  },
+  "result": [
+    {
+      "item": "minecraft:cactus",
+      "max_count": 2
+    }
+  ]
+}

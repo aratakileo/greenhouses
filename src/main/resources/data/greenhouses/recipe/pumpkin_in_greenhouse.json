@@ -1,0 +1,17 @@
+{
+  "type": "greenhouses:greenhouse_growing",
+  "duration": 1000,
+  "needs_water": true,
+  "plant": {
+    "item": "minecraft:pumpkin_seeds"
+  },
+  "ground": {
+    "item": "minecraft:farmland"
+  },
+  "result": [
+    {
+      "item": "minecraft:pumpkin",
+      "min_count": 1
+    }
+  ]
+}

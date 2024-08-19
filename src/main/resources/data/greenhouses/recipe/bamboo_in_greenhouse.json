@@ -1,0 +1,18 @@
+{
+  "type": "greenhouses:greenhouse_growing",
+  "duration": 500,
+  "needs_water": false,
+  "plant": {
+    "item": "minecraft:bamboo"
+  },
+  "ground": {
+    "tag": "greenhouses:bamboo_plantable_on"
+  },
+  "result": [
+    {
+      "item": "minecraft:bamboo",
+      "min_count": 5,
+      "max_count": 10
+    }
+  ]
+}

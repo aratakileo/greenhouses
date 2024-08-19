@@ -1,0 +1,23 @@
+{
+  "type": "greenhouses:greenhouse_growing",
+  "duration": 1000,
+  "needs_water": true,
+  "plant": {
+    "item": "minecraft:potato"
+  },
+  "ground": {
+    "item": "minecraft:farmland"
+  },
+  "result": [
+    {
+      "item": "minecraft:potato",
+      "min_count": 2,
+      "max_count": 3
+    },
+    {
+      "item": "minecraft:poisonous_potato",
+      "min_count": 0,
+      "max_count": 1
+    }
+  ]
+}

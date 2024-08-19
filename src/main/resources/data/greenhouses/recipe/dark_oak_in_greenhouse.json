@@ -1,0 +1,28 @@
+{
+  "type": "greenhouses:greenhouse_growing",
+  "duration": 1000,
+  "needs_water": false,
+  "plant": {
+    "item": "minecraft:dark_oak_sapling"
+  },
+  "ground": {
+    "tag": "minecraft:dirt"
+  },
+  "result": [
+    {
+      "item": "minecraft:dark_oak_log",
+      "min_count": 4,
+      "max_count": 5
+    },
+    {
+      "item": "minecraft:dark_oak_sapling",
+      "min_count": 2,
+      "max_count": 3
+    },
+    {
+      "item": "minecraft:stick",
+      "min_count": 3,
+      "max_count": 5
+    }
+  ]
+}

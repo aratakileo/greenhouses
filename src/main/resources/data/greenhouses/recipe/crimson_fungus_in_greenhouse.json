@@ -1,0 +1,27 @@
+{
+  "type": "greenhouses:greenhouse_growing",
+  "duration": 1000,
+  "needs_water": false,
+  "plant": {
+    "item": "minecraft:crimson_fungus"
+  },
+  "ground": {
+    "item": "minecraft:crimson_nylium"
+  },
+  "result": [
+    {
+      "item": "minecraft:crimson_stem",
+      "min_count": 4,
+      "max_count": 5
+    },
+    {
+      "item": "minecraft:crimson_fungus",
+      "min_count": 1
+    },
+    {
+      "item": "minecraft:nether_wart_block",
+      "min_count": 5,
+      "max_count": 7
+    }
+  ]
+}

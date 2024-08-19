@@ -1,0 +1,17 @@
+{
+  "type": "greenhouses:greenhouse_growing",
+  "duration": 800,
+  "needs_water": true,
+  "plant": {
+    "item": "minecraft:sugar_cane"
+  },
+  "ground": {
+    "tag": "greenhouses:sugar_cane_plantable_on"
+  },
+  "result": [
+    {
+      "item": "minecraft:sugar_cane",
+      "max_count": 2
+    }
+  ]
+}

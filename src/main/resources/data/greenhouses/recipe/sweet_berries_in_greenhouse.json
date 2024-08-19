@@ -1,0 +1,18 @@
+{
+  "type": "greenhouses:greenhouse_growing",
+  "duration": 650,
+  "needs_water": false,
+  "plant": {
+    "item": "minecraft:sweet_berries"
+  },
+  "ground": {
+    "tag": "minecraft:dirt"
+  },
+  "result": [
+    {
+      "item": "minecraft:sweet_berries",
+      "min_count": 2,
+      "max_count": 3
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "type": "greenhouses:greenhouse_growing",
+  "duration": 1000,
+  "needs_water": false,
+  "plant": {
+    "item": "minecraft:red_mushroom"
+  },
+  "ground": {
+    "item": "minecraft:mycelium"
+  },
+  "result": [
+    {
+      "item": "minecraft:mushroom_stem",
+      "min_count": 4,
+      "max_count": 5
+    },
+    {
+      "item": "minecraft:red_mushroom",
+      "min_count": 2,
+      "max_count": 3
+    },
+    {
+      "item": "minecraft:red_mushroom_block",
+      "min_count": 3,
+      "max_count": 5
+    }
+  ]
+}

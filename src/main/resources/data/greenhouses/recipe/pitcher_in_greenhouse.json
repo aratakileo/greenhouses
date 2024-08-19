@@ -1,0 +1,17 @@
+{
+  "type": "greenhouses:greenhouse_growing",
+  "duration": 1000,
+  "needs_water": true,
+  "plant": {
+    "item": "minecraft:pitcher_pod"
+  },
+  "ground": {
+    "item": "minecraft:farmland"
+  },
+  "result": [
+    {
+      "item": "minecraft:pitcher_plant",
+      "min_count": 1
+    }
+  ]
+}
