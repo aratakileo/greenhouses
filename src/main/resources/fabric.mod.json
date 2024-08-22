@@ -3,7 +3,7 @@
   "id": "greenhouses",
   "version": "${version}",
   "name": "Arataki's greenhouses",
-  "description": "Little pretty functional blocks of greenhouse",
+  "description": "This mod adds a new block, using which you can unload the routine of extracting items of plant origin, because now the greenhouse block will do it for you",
   "authors": [
     "Arataki Leo"
   ],
